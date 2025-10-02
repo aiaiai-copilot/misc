@@ -22,8 +22,63 @@
         "dependencies": [
           1
         ],
-        "status": "pending",
-        "subtasks": []
+        "status": "done",
+        "subtasks": [
+          {
+            "id": 1,
+            "title": "Create docker-compose.yml configuration file",
+            "description": "Create docker-compose.yml in project root with PostgreSQL 15+ service configuration including environment variables for credentials, volume mounting for data persistence, and port mapping (5432:5432)",
+            "dependencies": [],
+            "details": "Create docker-compose.yml file with PostgreSQL 15-alpine service configuration. Include environment variables for POSTGRES_USER, POSTGRES_PASSWORD, POSTGRES_DB with default values (misc/misc_password/misc). Configure volume mounting for postgres_data:/var/lib/postgresql/data for data persistence. Map port 5432:5432 for external access. Add healthcheck using pg_isready command.",
+            "status": "done",
+            "testStrategy": "Verify docker-compose.yml syntax is valid using docker-compose config command and that all required PostgreSQL environment variables are properly configured"
+          },
+          {
+            "id": 2,
+            "title": "Create init.sql database initialization script",
+            "description": "Create init.sql script with the exact database schema from PRD including records table with UUID primary key, text content, text[] tags arrays, GIN index on normalized_tags, and timestamp fields",
+            "dependencies": [],
+            "details": "Create docker/postgres/init.sql script with CREATE TABLE records statement matching PRD specification: id UUID PRIMARY KEY DEFAULT gen_random_uuid(), content TEXT NOT NULL, tags TEXT[] NOT NULL, normalized_tags TEXT[] NOT NULL, created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(), updated_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(), UNIQUE constraint on normalized_tags. Include CREATE INDEX statements for GIN index on normalized_tags and B-tree index on created_at DESC.",
+            "status": "done",
+            "testStrategy": "Verify SQL syntax is valid and that the schema matches exactly what the existing RecordRepository interface expects for data persistence"
+          },
+          {
+            "id": 3,
+            "title": "Configure Docker volume mounting for init.sql",
+            "description": "Configure docker-compose.yml to mount the init.sql script into the PostgreSQL container's docker-entrypoint-initdb.d directory",
+            "dependencies": [
+              "2.1",
+              "2.2"
+            ],
+            "details": "Add volume mapping in docker-compose.yml to mount ./docker/postgres/init.sql:/docker-entrypoint-initdb.d/init.sql:ro in the postgres service. This ensures the initialization script runs automatically when the PostgreSQL container starts for the first time. The :ro flag makes it read-only for security.",
+            "status": "done",
+            "testStrategy": "Verify that the init.sql script is properly mounted and executed by checking container logs during first startup and confirming tables are created"
+          },
+          {
+            "id": 4,
+            "title": "Test Docker Compose PostgreSQL startup",
+            "description": "Test that docker-compose up -d successfully starts PostgreSQL service and accepts connections",
+            "dependencies": [
+              "2.1",
+              "2.2",
+              "2.3"
+            ],
+            "details": "Run docker-compose up -d and verify PostgreSQL container starts successfully without errors. Test database connectivity using psql or pg_isready commands. Verify that the database initialization script executed successfully by connecting to the database and checking that the records table exists with correct schema. Test that the GIN and B-tree indexes were created properly.",
+            "status": "done",
+            "testStrategy": "Use docker-compose logs postgres to check for startup errors, run pg_isready to test connectivity, and connect with psql to verify table and index creation with \\d records and \\di commands"
+          },
+          {
+            "id": 5,
+            "title": "Verify database schema and indexes",
+            "description": "Verify that the database tables are created with correct schema including proper data types, constraints, and indexes as specified in PRD",
+            "dependencies": [
+              "2.4"
+            ],
+            "details": "Connect to the PostgreSQL database and verify the records table schema matches PRD exactly: UUID id field with proper default, TEXT content field, TEXT[] arrays for tags and normalized_tags, TIMESTAMP WITH TIME ZONE fields for created_at and updated_at with proper defaults. Verify UNIQUE constraint on normalized_tags field. Confirm GIN index exists on normalized_tags for efficient array searching and B-tree index on created_at for sorting performance.",
+            "status": "done",
+            "testStrategy": "Use psql commands \\d records to inspect table structure, \\di to list indexes, and run sample INSERT and SELECT operations to verify data types and constraints work correctly"
+          }
+        ]
       },
       {
         "id": 3,
@@ -133,7 +188,7 @@
     ],
     "metadata": {
       "created": "2025-10-02T17:53:14.910Z",
-      "updated": "2025-10-02T19:33:58.043Z",
+      "updated": "2025-10-02T20:39:31.627Z",
       "description": "Tasks for master context"
     }
   }
