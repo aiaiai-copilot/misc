@@ -1,209 +1,377 @@
-# TaskMaster Automation Instructions for Claude
+# TaskMaster Project Standards & Guidelines
 
-## CRITICAL: Automatic TaskMaster Workflow
+## 🎯 CORE PRINCIPLES
 
-When the user asks me to work on ANY task in this project, I MUST automatically follow this workflow:
+**These principles define HOW we work on this project:**
 
-### 1. Task Selection & Branch Creation
+### 1. PRAGMATIC DEVELOPMENT
 
-**CRITICAL: ALWAYS follow this EXACT sequence - NO exceptions:**
+**Focus on implementation with practical validation**
+
+- Implement features incrementally
+- Validate functionality works as expected
+- Write tests when they add value
+- Configuration and setup tasks may not require tests
+
+#### Task Completion Requirements
+
+**A task or subtask can be marked as complete when:**
+
+- ✅ Code is implemented and working
+- ✅ Build passes without errors
+- ✅ Manual testing confirms functionality
+- ✅ User approves the implementation
+
+### 2. CURRENT DOCUMENTATION
+
+**Always use up-to-date documentation via Context7 MCP**
+
+- Get current docs BEFORE using any external library
+- Never rely on potentially outdated knowledge
+- Applies to all external dependencies
+
+### 3. BUILD QUALITY GATES
+
+**All code must pass quality checks before commit**
+
+- **Standard validation**: `yarn validate` (build + typecheck + lint + test)
+  - Excludes performance tests tagged with `[perf]` for faster feedback
+  - Use during development for quick validation
+  - **⚠️ Only for non-critical changes** (UI fixes, documentation, simple logic)
+
+- **Comprehensive validation**: `yarn validate:all` (build + typecheck + lint + test:all)
+  - Includes ALL tests (regular + performance + integration)
+  - **🔴 MANDATORY for these changes:**
+    - Database schema, migrations, or queries
+    - Repository implementations or data access layer
+    - Performance-critical code or optimizations
+    - Integration between multiple services
+    - Caching, background jobs, or async operations
+    - API contracts with database interactions
+    - Any code touching Testcontainer-tested functionality
+  - Use before final commits or in CI/CD
+
+- No commit should be made if any check fails
+- Fix all errors before proceeding
+
+**🔴 CRITICAL RULE: When in doubt, use `yarn validate:all`**
+
+If your changes involve:
+
+- ❌ Database (PostgreSQL, Redis, migrations)
+- ❌ Performance (queries, indexes, optimizations)
+- ❌ Integration (API + DB, caching, async jobs)
+- ❌ Repository layer or data access
+- ❌ Batch operations or large datasets
+
+→ **You MUST run `yarn validate:all`** to ensure integration tests pass!
+
+**Test Script Variants:**
 
 ```bash
-# STEP 1: Check for unmerged PRs FIRST
-gh pr list --state=open
-
-# STEP 2: Sync with main to get latest merged changes
-git checkout main
-git pull origin main
-
-# STEP 3: ONLY NOW check what task to work on
-tm next
-
-# If there are open PRs from previous tasks:
-# STOP and notify user: "There are unmerged PRs. Please approve and merge them before I continue with the next task."
-# List the open PRs and wait for user confirmation
-
-# After completing a task and creating its PR, ALWAYS verify merge status before next task:
-# If no new changes were pulled in STEP 2, the PR is still unmerged - STOP and notify user
-# Only proceed with next task if the PR has been merged (new changes were pulled)
-
-# Create branch automatically using format: task/<id>-<description>
-git checkout -b task/<id>-<short-description>
-
-# Set task to in-progress
-tm set-status --id=<id> --status=in-progress
+yarn test        # Regular tests only (excludes [perf] tagged tests)
+yarn test:perf   # Performance tests only ([perf] tagged tests)
+yarn test:all    # All tests (regular + performance)
 ```
 
-**NEVER announce a task as "next" until AFTER completing steps 1-3 above!**
+See [.claude/TEST-TAGGING-EXAMPLES.md](.claude/TEST-TAGGING-EXAMPLES.md) for details on performance test tagging.
 
-### 2. During Task Implementation
+**🔴 CRITICAL**: See [.claude/VALIDATION-RULES.md](.claude/VALIDATION-RULES.md) for **mandatory** validation rules.
+**Future sessions: READ THIS DOCUMENT to understand when `validate:all` is REQUIRED!**
 
-- Work ONLY on the task branch
-- Make focused commits with clear messages
-- Run tests before completion
-- Follow TDD approach when applicable
+#### 🔴 CRITICAL: Test Validation Protocol
 
-### 3. Task Completion (AUTOMATICALLY do ALL of these)
+**MANDATORY test completion verification:**
+
+1. **ALL tests MUST complete successfully** - no timeouts, no partial results
+2. **Must see exact pattern**: `Tests: X passed, X total` (where both X are equal, zero failures)
+3. **If tests timeout**: IMMEDIATELY increase timeout, never proceed on assumptions
+
+**Timeout Handling Rules:**
 
 ```bash
-# Mark task complete FIRST (before final commit)
-tm set-status --id=<id> --status=done
+# STEP 1: When tests timeout, increase Jest timeout
+# Edit jest.config.js or package-specific config:
+testTimeout: 300000  # 5 minutes for performance tests
 
-# Commit final changes INCLUDING task status
-git add .
-git commit -m "feat: implement task #<id> - <brief description>"
+# STEP 2: Or use per-test timeout
+describe('Performance Tests', () => {
+  jest.setTimeout(300000);
+});
 
-# Push branch
-git push -u origin task/<id>-<description>
-
-# Create PR
-gh pr create --title "Task #<id>: <title>" --body "Implements task #<id>"
-
-# Return to main
-git checkout main
-git pull origin main
+# STEP 3: Or command-line override
+yarn test --testTimeout=300000
 ```
 
-### 4. Branch Naming Rules
+**NEVER:**
+
+- ❌ Proceed with incomplete test validation
+- ❌ Assume partial success = complete success
+- ❌ Accept timeouts without increasing timeout
+- ❌ Reduce test comprehensiveness to avoid timeouts
+
+**ALWAYS:**
+
+- ✅ Show final test count: "Tests: 80/80 passed (100%)"
+- ✅ Increase timeout generously for performance/integration tests
+- ✅ Verify 100% completion before any commit approval
+- ✅ Performance tests with large datasets SHOULD take time
+
+**Correct Validation Output:**
+
+```
+✅ Build: Success
+✅ TypeScript: Success
+✅ Lint: Success
+✅ Tests: 142/142 passed (100% success rate)
+```
+
+**WRONG Validation Output:**
+
+```
+✅ Build: Success
+✅ TypeScript: Success
+✅ Lint: Success
+❌ Missing test results!
+```
+
+### 4. INCREMENTAL DELIVERY
+
+**Work must be completed incrementally with validation**
+
+- One subtask at a time with approval between each
+- Manual testing approval required before every commit
+- Clear progress tracking and status updates
+
+---
+
+## 🧪 TESTING STANDARDS
+
+### Testing Approach
+
+**Write tests when they add value, not as a requirement**
+
+- Tests validate implementation after code is written
+- Focus on critical functionality and edge cases
+- Integration tests for database/API operations when needed
+- E2E tests for user workflows
+- Manual testing is equally important
+
+### Test Classification
+
+| Test Type   | Dependencies | When to Use             | Tools            | Speed            |
+| ----------- | ------------ | ----------------------- | ---------------- | ---------------- |
+| Unit        | Mocked       | Isolated logic          | Jest + Mocks     | Fast (ms)        |
+| Integration | Real         | Database/API operations | Jest             | Medium (seconds) |
+| E2E         | Full stack   | User workflows          | Playwright       | Slow (minutes)   |
+
+### File Naming Convention
+
+```bash
+# Unit tests
+*.test.ts
+*-unit.test.ts
+
+# Integration tests
+*-integration.test.ts
+
+# End-to-end tests
+*.e2e.test.ts
+*.spec.ts
+```
+
+### Test Quality Requirements
+
+1. **Type Safety**: No `any` types in test code
+2. **Cleanup**: Proper resource disposal (`afterAll`, `beforeEach`)
+3. **Isolation**: Tests don't depend on each other
+4. **Assertions**: Clear, specific expectations
+
+---
+
+## 🎨 E2E TESTING STANDARDS
+
+### When Adding New UI Components
+
+1. CREATE new E2E tests in `e2e/` following naming `XX-feature-name.spec.ts`
+2. UPDATE page objects in `e2e/support/page-objects/`
+3. TEST all user interactions and accessibility
+4. VERIFY error scenarios and edge cases
+
+### When Modifying Existing UI
+
+1. UPDATE affected E2E tests to match new behavior
+2. MODIFY page object methods if selectors change
+3. VERIFY backward compatibility
+4. TEST transition periods
+
+### When Removing UI Features
+
+1. REMOVE corresponding E2E tests
+2. CLEAN UP page object methods
+3. UPDATE dependent test suites
+
+### E2E Coverage Requirements
+
+- **Functionality**: Core features work as expected
+- **User flows**: Complete journeys from start to finish
+- **Error handling**: Graceful failure and recovery
+- **Accessibility**: Keyboard navigation, focus management, ARIA
+- **Cross-component integration**: Component interactions
+- **Data integrity**: CRUD operations
+
+### E2E Quality Standards
+
+- Use semantic selectors (`data-testid`)
+- Write descriptive test names (Given-When-Then)
+- Include multilingual content support
+- Test realistic scenarios
+- Maintain test independence
+- Clean up test data between tests
+
+---
+
+## 📚 CONTEXT7 MCP USAGE
+
+Use Context7 to get current documentation for ANY external library:
+
+```javascript
+// Step 1: Resolve library ID
+mcp__context7__resolve - library - id('library-name');
+
+// Step 2: Get documentation with specific topic
+mcp__context7__get -
+  library -
+  docs('/resolved/library-id', {
+    topic: 'specific-feature', // e.g., "migrations", "testing"
+    tokens: 8000, // increase for complex topics
+  });
+```
+
+**Always get documentation BEFORE using any external library or framework.**
+
+---
+
+## 🏗️ BRANCHING STRATEGY
+
+### Branch Hierarchy
+
+- **Parent tasks** (have subtasks) → Create new branch
+- **Leaf tasks** (no subtasks) → Work on parent's branch
+
+### Branch Naming
 
 - Format: `task/<id>-<description>`
 - Use lowercase, hyphens for spaces
-- Keep description under 50 characters
-- Examples:
-  - `task/1-initialize-monorepo-structure`
-  - `task/6-implement-search-query-value-object`
+- Keep under 50 characters
 
-### 5. When User Says "Work on task X" or "Implement next task"
+### Merge Strategy
 
-I MUST:
+- **Top-level branches** → Merge into `main`
+- **Intermediate branches** → Merge into parent branch
+- **Leaf tasks** → Already on parent branch (no merge)
 
-1. First check if previous task's PR was merged: `git checkout main && git pull origin main`
-2. If no changes pulled, STOP and report: "Previous task's PR is still unmerged. Please approve and merge before continuing."
-3. Only if PR was merged: run `tm next` or use specified task ID
-4. Create appropriate branch automatically
-5. Set task status to in-progress
-6. Implement the task
-7. Complete the full workflow above
-8. Report completion to user with PR link
-9. Always ask me if I want to test manually before committing.
-   **NEVER ask user to do these steps manually - I handle ALL TaskMaster automation!**
+### Pull Request Rules
 
-## CRITICAL REMINDERS
+- **Top-level tasks** → PR to `main`
+- **Intermediate tasks** → PR to parent branch
+- **Leaf tasks** → No PR needed
 
-### Task Status Management
+---
 
-- ❗ **ALWAYS** update task status (`tm set-status --id=<id> --status=done`) BEFORE the final commit
-- ❗ **NEVER** update task status after pushing or creating PR
-- ❗ **ALWAYS** include task status changes in the same commit as the implementation
-- ❗ The task status file (`.taskmaster/tasks/tasks.json`) must be committed on the task branch
+## 🚀 WORKFLOW AUTOMATION
 
-### Why This Matters
+### Available Commands
 
-- Task status changes on main branch create inconsistency
-- PRs should include both implementation AND task completion status
-- This ensures task tracking is synchronized with code changes
+**TaskMaster Commands (enforce all workflow rules automatically):**
 
-### CRITICAL: Stay on Task Branch Throughout Implementation
+- `/next-task` - Start work on next priority task
+- `/complete-task` - Complete current task with validation (auto-creates PR when entire task done)
+- `/fix-errors <package>` - Fix errors in specific package (for new sessions)
 
-**NEVER SWITCH TO MAIN DURING ACTIVE TASK WORK!**
+**Commands enforce:**
 
-❌ **WRONG WORKFLOW (causes branch confusion):**
+- One subtask at a time workflow
+- Mandatory build validation before commits
+- Manual testing approval gates
+- Proper git branching strategy
+- Automated PR creation
 
-```bash
-# Working on task branch
-git checkout task/<id>-<description>
-# Implementation work...
-# MISTAKE: Switching to main during task work
-git checkout main  # ❌ DON'T DO THIS DURING TASK!
-tm set-status --id=<id> --status=done
-git commit # ❌ Wrong branch for task completion!
-```
+### Command Location
 
-✅ **CORRECT WORKFLOW:**
+Place command files in:
 
-```bash
-# Working on task branch
-git checkout task/<id>-<description>
-# Implementation work...
-# STAY ON TASK BRANCH for completion
-tm set-status --id=<id> --status=done
-git add .
-git commit -m "feat: complete task #<id> - description"
-git push -u origin task/<id>-<description>
+- `.claude/commands/` - Project-specific commands (shared with team)
+- `~/.claude/commands/` - Personal commands (user-specific)
 
-# Create PR (method depends on your setup):
-# - GitHub: gh pr create ...
-# - GitLab: glab mr create ...
-# - Manual: create PR through web interface
-# - Or merge directly if no PR workflow
+### Workflow Sequence
 
-# ONLY switch to main when starting NEXT task
-git checkout main
-git pull origin main
-```
+1. **Start**: `/next-task` → Get next task from TaskMaster
+2. **Work**: Implement the functionality
+3. **Complete**: `/complete-task` → Validates build, gets approval, then commits
+4. **Repeat**: For each task (with approval between)
+5. **Auto-PR**: `/complete-task` on final subtask → Auto-detects completion, creates PR automatically
 
-**Key Principle: Task work (including status updates) stays on task branch until task is fully complete and merged.**
+### New Session Recovery (After Context Loss)
 
-## E2E Test Requirements for UI/UX Changes
+**When starting a NEW SESSION to continue work:**
 
-When making ANY UI/UX changes, you MUST maintain end-to-end test coverage:
+1. **If fixing errors**: Use `/fix-errors <package>` command
+   - Example: `/fix-errors backend` or `/fix-errors infrastructure/postgresql`
+   - Focuses on single package to avoid overwhelming context
+   - Ensures build passes in that package
 
-### MANDATORY E2E Test Actions
+2. **Key reminders for new sessions**:
+   - Fix one package completely before moving to another
+   - Run validation before committing
+   - Get manual testing approval
 
-#### ✅ **When Adding New UI Components or Features:**
+---
 
-1. **CREATE new E2E tests** in `e2e/` directory following naming convention `XX-feature-name.spec.ts`
-2. **UPDATE page objects** in `e2e/support/page-objects/` with new selectors and methods
-3. **TEST all user interactions**: clicks, keyboard navigation, form submissions
-4. **VERIFY accessibility**: keyboard navigation, ARIA labels, screen reader support
-5. **INCLUDE error scenarios**: invalid inputs, network failures, edge cases
+## 📁 PROJECT REFERENCES
 
-#### 📝 **When Modifying Existing UI:**
+- **Test Specifications**: `.taskmaster/docs/prd.txt`
+- **Task Definitions**: `.taskmaster/tasks/tasks.json`
+- **E2E Tests**: `e2e/`
+- **E2E Guidelines**: `e2e/README.md`
+- **TaskMaster CLI**: `.taskmaster/CLAUDE.md`
+- **Context Recovery**: `.claude/commands/CONTEXT-RECOVERY.md` (for new sessions)
 
-1. **UPDATE affected E2E tests** to match new behavior/selectors
-2. **MODIFY page object methods** if selectors or interactions change
-3. **VERIFY backward compatibility** or update tests accordingly
-4. **TEST both old and new user flows** during transition periods
+---
 
-#### ❌ **When Removing UI Features:**
+## 🚫 COMMON ANTI-PATTERNS
 
-1. **REMOVE corresponding E2E tests** for deleted functionality
-2. **CLEAN UP page object methods** that are no longer needed
-3. **UPDATE test suites** that depend on removed features
-4. **VERIFY remaining tests still pass** after cleanup
+### Testing Anti-Patterns
 
-### E2E Test Coverage Checklist
+- ❌ Using `any` types in test code
+- ❌ Skipping cleanup in tests
+- ❌ Tests that depend on execution order
+- ❌ Reducing test data to avoid timeouts (increase timeout instead!)
+- ❌ Accepting partial test results due to timeouts
+- ❌ Reporting "validation passed" without showing test numbers
+- ❌ Assuming test success when tests timeout or partially complete
 
-For EVERY UI change, ensure tests cover:
+### Development Anti-Patterns
 
-- [ ] **Functionality**: Core feature works as expected
-- [ ] **User flows**: Complete user journeys from start to finish
-- [ ] **Error handling**: Graceful failure and recovery
-- [ ] **Accessibility**: Keyboard navigation, focus management, ARIA
-- [ ] **Cross-component integration**: How changes affect other UI parts
-- [ ] **Data integrity**: For features involving data (export/import, CRUD)
+- ❌ Using libraries without checking Context7 documentation
+- ❌ Committing code that fails build validation
+- ❌ Creating branches for leaf tasks
+- ❌ **Starting new session without `/fix-errors`** when errors exist
+- ❌ **Trying to fix multiple packages simultaneously** in new session
 
-### E2E Test Quality Standards
+### Quality Anti-Patterns
 
-- **Use semantic selectors**: Prefer `data-testid` over CSS classes
-- **Write descriptive test names**: Clear Given-When-Then structure
-- **Include multilingual content**: Match application's language usage
-- **Test real scenarios**: Use realistic data and user behaviors
-- **Maintain test independence**: Each test should run in isolation
-- **Clean up test data**: Always reset state between tests
+- ❌ Ignoring TypeScript errors
+- ❌ Ignoring build errors
+- ❌ Skipping manual testing approval
 
-### Non-Negotiable Rules
+---
 
-1. **NO UI changes without corresponding E2E test updates**
-2. **ALL E2E tests MUST pass before committing**
-3. **DOCUMENT test scenarios in commit messages**
-4. **REVIEW E2E test coverage for each PR**
+## 📝 IMPORT TASKMASTER WORKFLOW
 
-**Failure to maintain E2E tests will result in incomplete implementation.**
-
-Refer to `e2e/README.md` for detailed guidelines and examples.
-
-## Task Master AI Instructions
-
-**Import Task Master's development workflow commands and guidelines, treat as if import is in the main CLAUDE.md file.**
+**For workflow commands and operational procedures:**
 @./.taskmaster/CLAUDE.md
+
+---
+
+_This document defines the technical standards and principles for the project. For specific workflow instructions, use the appropriate slash commands or refer to the TaskMaster documentation._
