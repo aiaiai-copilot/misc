@@ -110,29 +110,48 @@ Begin work on the next task following TaskMaster workflow rules.
    - Use `tm list --parent=<task-id>` to check for subtasks
    - Use `tm show <task-id>` to see task details and parent
 
-2. **Branch rules**:
-   - **Parent task with subtasks** → Create/switch to branch `task/<id>-<description>`
-   - **Leaf task (no subtasks)** → Work on parent's branch or main
-   - **Subtask of parent** → Work on parent's branch
+2. **Branch creation rules**:
+   - **Top-level task (parent or leaf)** → Create branch `task/<id>-<description>` from `main`
+   - **Intermediate task (has parent AND subtasks)** → Create branch `task/<id>-<description>` from parent's branch
+   - **Leaf task (has parent, NO subtasks)** → Work on parent's branch (no new branch)
 
-3. **Branch switching logic**:
+3. **Branch base determination**:
+
+   ```bash
+   # Top-level tasks → base on main
+   git checkout main
+   git checkout -b task/1-feature
+
+   # Intermediate tasks → base on parent's branch
+   git checkout task/1-feature
+   git checkout -b task/1.1-sub-feature
+
+   # Leaf tasks → work on parent's branch (no new branch)
+   git checkout task/1-feature  # or task/1.1-sub-feature
+   # work here directly
+   ```
+
+4. **Branch switching logic**:
 
    ```bash
    # Get current branch
    current_branch=$(git branch --show-current)
 
-   # Determine target branch based on task type
-   # If parent task: task/1-feature
-   # If subtask: stay on parent's branch task/1-feature
-   # If leaf task on main: stay on main
+   # Determine target branch based on task hierarchy:
+   # - Top-level (no parent) → create from main
+   # - Has parent AND subtasks → create from parent's branch
+   # - Has parent, NO subtasks → use parent's branch
 
-   # Switch if needed
+   # Switch/create if needed
    if [ "$current_branch" != "$target_branch" ]; then
+       # First checkout base branch (main or parent)
+       git checkout $base_branch
+       # Then create/switch to target
        git checkout $target_branch || git checkout -b $target_branch
    fi
    ```
 
-4. **Verify branch state**:
+5. **Verify branch state**:
    - After switching, pull latest changes: `git pull origin <branch-name> --rebase`
    - Ensure tasks.json is up to date on this branch
    - If conflicts, resolve before proceeding
@@ -222,11 +241,19 @@ Begin work on the next task following TaskMaster workflow rules.
    tm current                  # Check current task
    ```
 
-2. **Task-to-branch mapping**:
-   - Task 1 (parent) → `task/1-main-feature`
-   - Task 1.1 (subtask) → Work on `task/1-main-feature`
-   - Task 1.2 (subtask) → Work on `task/1-main-feature`
-   - Task 2 (parent) → `task/2-other-feature`
+2. **Task-to-branch mapping examples**:
+
+   ```
+   main
+   ├── task/1-setup-backend (top-level with subtasks, from main)
+   │   ├── task/1.1-database (intermediate with subtasks, from task/1)
+   │   │   ├── 1.1.1 (leaf, works on task/1.1-database)
+   │   │   └── 1.1.2 (leaf, works on task/1.1-database)
+   │   └── task/1.2-api (intermediate with subtasks, from task/1)
+   │       ├── 1.2.1 (leaf, works on task/1.2-api)
+   │       └── 1.2.2 (leaf, works on task/1.2-api)
+   └── task/2-postgresql (top-level, no subtasks, from main)
+   ```
 
 3. **When confusion occurs**:
    - If on `main` but should be on task branch:
