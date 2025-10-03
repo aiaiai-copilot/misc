@@ -5,4 +5,10 @@
  */
 
 export { PostgresRecordRepository } from './postgres-record-repository.js';
-export { createConnectionPool, type PostgresConfig } from './connection.js';
+export {
+  createConnectionPool,
+  createConnectionPoolFromUri,
+  closeConnectionPool,
+  DEFAULT_CONFIG,
+  type PostgresConfig,
+} from './connection.js';
