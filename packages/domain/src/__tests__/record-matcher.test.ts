@@ -1,6 +1,6 @@
-import { RecordMatcher } from '../record-matcher';
-import { Record } from '../record';
-import { Tag } from '../tag';
+import { RecordMatcher } from '../record-matcher.js';
+import { Record } from '../record.js';
+import { Tag } from '../tag.js';
 import { RecordId, RecordContent, TagId, SearchQuery } from '@misc-poc/shared';
 
 describe('RecordMatcher Domain Service', () => {

@@ -1,5 +1,5 @@
 import { Result, Ok, Err } from '@misc-poc/shared';
-import { ApplicationConfig } from './application-config';
+import { ApplicationConfig } from './application-config.js';
 
 export type DependencyKey = string;
 export type FactoryFunction<T = unknown> = (

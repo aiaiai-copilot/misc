@@ -1,5 +1,5 @@
-import { RecordId } from '../record-id';
-import { generateUuid, isValidUuid } from '../uuid-utils';
+import { RecordId } from '../record-id.js';
+import { generateUuid, isValidUuid } from '../uuid-utils.js';
 
 describe('RecordId', () => {
   describe('constructor', () => {

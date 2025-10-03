@@ -1,5 +1,5 @@
-import { TagValidator, TagValidationResult } from './tag-validator';
-import { TagNormalizer } from './tag-normalizer';
+import { TagValidator, TagValidationResult } from './tag-validator.js';
+import { TagNormalizer } from './tag-normalizer.js';
 
 export class TagParser {
   private readonly validator: TagValidator;

@@ -2,7 +2,7 @@ import {
   StorageSchema,
   type StorageSchemaV21,
   type LegacyStorageSchemaV20,
-} from './storage-schema';
+} from './storage-schema.js';
 
 export interface QuotaUsage {
   used: number;

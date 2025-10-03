@@ -4,9 +4,9 @@ import {
   ImportValidator,
   ImportValidationResult,
   ImportValidationError,
-} from '../import-validator';
-import { ExportDTO } from '../../dtos/export-dto';
-import { RecordDTO } from '../../dtos/record-dto';
+} from '../import-validator.js';
+import { ExportDTO } from '../../dtos/export-dto.js';
+import { RecordDTO } from '../../dtos/record-dto.js';
 
 describe('ImportValidator', () => {
   let importValidator: ImportValidator;

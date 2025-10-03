@@ -2,7 +2,7 @@ import { Router, Request, Response } from 'express';
 import { PostgresRecordRepository } from '@misc-poc/infrastructure-postgresql';
 import { RecordContent, RecordId, SearchQuery } from '@misc-poc/shared';
 import { Record } from '@misc-poc/domain';
-import { getDatabasePool } from '../services/database';
+import { getDatabasePool } from '../services/database.js';
 
 const router = Router();
 

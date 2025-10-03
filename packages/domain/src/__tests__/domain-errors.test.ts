@@ -4,7 +4,7 @@ import {
   InvalidTagError,
   DuplicateRecordError,
   TagLimitExceededError,
-} from '../domain-errors';
+} from '../domain-errors.js';
 
 describe('Domain Error Hierarchy', () => {
   describe('DomainError base class', () => {

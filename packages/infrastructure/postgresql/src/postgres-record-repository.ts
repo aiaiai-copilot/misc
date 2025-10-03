@@ -10,7 +10,7 @@ import {
 } from '@misc-poc/application';
 import { Record, DomainError } from '@misc-poc/domain';
 import { Result, Ok, Err, RecordId, TagId, SearchQuery } from '@misc-poc/shared';
-import { RecordRow, fromDatabaseRow, toDatabaseRow } from './mappers';
+import { RecordRow, fromDatabaseRow, toDatabaseRow } from './mappers.js';
 
 export class PostgresRecordRepository implements RecordRepository {
   constructor(private readonly pool: Pool) {}

@@ -1,4 +1,4 @@
-import { RecordDTO, RecordDTOMapper } from '../record-dto';
+import { RecordDTO, RecordDTOMapper } from '../record-dto.js';
 import { Record } from '@misc-poc/domain';
 import { RecordId, RecordContent, TagId } from '@misc-poc/shared';
 

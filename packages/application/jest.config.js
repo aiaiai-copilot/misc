@@ -8,6 +8,7 @@ export default {
   coverageDirectory: 'coverage',
   coverageReporters: ['text', 'lcov', 'html'],
   moduleNameMapper: {
+    '^(\\.{1,2}/.*)\\.js$': '$1',
     '^@misc-poc/shared$': '<rootDir>/../shared/src/index.ts',
     '^@misc-poc/domain$': '<rootDir>/../domain/src/index.ts',
   },

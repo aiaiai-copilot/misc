@@ -4,7 +4,7 @@
 
 import { Record } from '@misc-poc/domain';
 import { RecordId, RecordContent, TagId } from '@misc-poc/shared';
-import { toDatabaseRow, fromDatabaseRow, RecordRow } from '../mappers';
+import { toDatabaseRow, fromDatabaseRow, RecordRow } from '../mappers.js';
 
 describe('Database Mappers', () => {
   describe('toDatabaseRow', () => {

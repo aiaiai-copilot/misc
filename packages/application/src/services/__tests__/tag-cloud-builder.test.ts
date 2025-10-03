@@ -1,8 +1,8 @@
-import { TagCloudBuilder, TagCloudBuilderConfig } from '../tag-cloud-builder';
-import { SearchResultDTO } from '../../dtos/search-result-dto';
-import { RecordDTO } from '../../dtos/record-dto';
-import { TagUsageInfo } from '../../ports/tag-repository';
-import { TagCloudItemDTO } from '../../dtos/tag-cloud-item-dto';
+import { TagCloudBuilder, TagCloudBuilderConfig } from '../tag-cloud-builder.js';
+import { SearchResultDTO } from '../../dtos/search-result-dto.js';
+import { RecordDTO } from '../../dtos/record-dto.js';
+import { TagUsageInfo } from '../../ports/tag-repository.js';
+import { TagCloudItemDTO } from '../../dtos/tag-cloud-item-dto.js';
 import { Tag } from '@misc-poc/domain';
 import { TagId } from '@misc-poc/shared';
 

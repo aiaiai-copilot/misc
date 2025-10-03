@@ -1,4 +1,4 @@
-import { Result, Ok, Err } from '../result';
+import { Result, Ok, Err } from '../result.js';
 
 describe('Result<T, E>', () => {
   describe('Ok constructor', () => {

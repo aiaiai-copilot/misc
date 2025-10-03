@@ -1,4 +1,4 @@
-import type { StorageSchemaV21 } from './storage-schema';
+import type { StorageSchemaV21 } from './storage-schema.js';
 
 export interface IndexStatistics {
   totalTags: number;

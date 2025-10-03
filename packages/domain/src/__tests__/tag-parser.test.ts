@@ -1,6 +1,6 @@
-import { TagParser } from '../tag-parser';
-import { TagValidator } from '../tag-validator';
-import { TagNormalizer } from '../tag-normalizer';
+import { TagParser } from '../tag-parser.js';
+import { TagValidator } from '../tag-validator.js';
+import { TagNormalizer } from '../tag-normalizer.js';
 
 describe('TagParser', () => {
   let parser: TagParser;

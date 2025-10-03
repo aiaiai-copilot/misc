@@ -1,6 +1,6 @@
-import { SearchResultDTO, SearchResultDTOMapper } from '../search-result-dto';
-import { RecordDTO } from '../record-dto';
-import { RecordSearchResult } from '../../ports/record-repository';
+import { SearchResultDTO, SearchResultDTOMapper } from '../search-result-dto.js';
+import { RecordDTO } from '../record-dto.js';
+import { RecordSearchResult } from '../../ports/record-repository.js';
 import { Record } from '@misc-poc/domain';
 import { RecordId, RecordContent, TagId } from '@misc-poc/shared';
 

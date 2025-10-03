@@ -2,10 +2,10 @@ import {
   UpdateRecordUseCase,
   UpdateRecordRequest,
   UpdateRecordResponse,
-} from '../update-record-use-case';
-import { RecordRepository } from '../../ports/record-repository';
-import { TagRepository } from '../../ports/tag-repository';
-import { UnitOfWork } from '../../ports/unit-of-work';
+} from '../update-record-use-case.js';
+import { RecordRepository } from '../../ports/record-repository.js';
+import { TagRepository } from '../../ports/tag-repository.js';
+import { UnitOfWork } from '../../ports/unit-of-work.js';
 import {
   Result,
   RecordContent,

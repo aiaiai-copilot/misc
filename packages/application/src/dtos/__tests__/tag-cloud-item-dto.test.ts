@@ -1,5 +1,5 @@
-import { TagCloudItemDTO, TagCloudItemDTOMapper } from '../tag-cloud-item-dto';
-import { TagUsageInfo } from '../../ports/tag-repository';
+import { TagCloudItemDTO, TagCloudItemDTOMapper } from '../tag-cloud-item-dto.js';
+import { TagUsageInfo } from '../../ports/tag-repository.js';
 import { Tag } from '@misc-poc/domain';
 import { TagId } from '@misc-poc/shared';
 

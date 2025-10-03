@@ -1,9 +1,9 @@
-import { StorageManager, type BackupData } from './storage-manager';
+import { StorageManager, type BackupData } from './storage-manager.js';
 import {
   StorageSchema,
   type StorageSchemaV21,
   type LegacyStorageSchemaV20,
-} from './storage-schema';
+} from './storage-schema.js';
 
 export interface MigrationScript {
   (schema: unknown): unknown;

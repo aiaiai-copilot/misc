@@ -1,4 +1,4 @@
-import * as SharedModule from '../index';
+import * as SharedModule from '../index.js';
 
 describe('Shared Module Exports', () => {
   it('should export Result types', () => {

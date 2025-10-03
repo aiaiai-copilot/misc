@@ -2,6 +2,7 @@
   "name": "@misc-poc/backend",
   "version": "0.1.0",
   "private": true,
+  "type": "module",
   "description": "Backend API server for misc-poc monorepo",
   "main": "dist/index.js",
   "scripts": {

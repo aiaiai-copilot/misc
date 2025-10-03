@@ -1,4 +1,4 @@
-import { Result, Ok, Err } from './result';
+import { Result, Ok, Err } from './result.js';
 
 export const ValidationConstants = {
   MAX_STRING_LENGTH: 1000,

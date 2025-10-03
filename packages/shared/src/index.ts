@@ -1,5 +1,5 @@
 // Result type for error handling
-export { Result, Ok, Err } from './result';
+export { Result, Ok, Err } from './result.js';
 
 // UUID utilities
 export {
@@ -7,13 +7,13 @@ export {
   validateUuid,
   isValidUuid,
   parseUuid,
-} from './uuid-utils';
+} from './uuid-utils.js';
 
 // Value objects
-export { RecordId } from './record-id';
-export { TagId } from './tag-id';
-export { RecordContent } from './record-content';
-export { SearchQuery } from './search-query';
+export { RecordId } from './record-id.js';
+export { TagId } from './tag-id.js';
+export { RecordContent } from './record-content.js';
+export { SearchQuery } from './search-query.js';
 
 // Date utilities
 export {
@@ -26,7 +26,7 @@ export {
   daysBetween,
   type DateInput,
   type DateFormat,
-} from './date-utils';
+} from './date-utils.js';
 
 // String utilities
 export {
@@ -35,10 +35,10 @@ export {
   truncate,
   sanitizeInput,
   isEmptyOrWhitespace,
-} from './string-utils';
+} from './string-utils.js';
 
 // Validation constants and rules
-export { ValidationConstants, ValidationRules } from './validation-constants';
+export { ValidationConstants, ValidationRules } from './validation-constants.js';
 
 // Configuration
-export { DefaultConfig, createConfig, type AppConfig } from './config';
+export { DefaultConfig, createConfig, type AppConfig } from './config.js';

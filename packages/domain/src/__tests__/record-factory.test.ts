@@ -1,7 +1,7 @@
-import { RecordFactory } from '../record-factory';
-import { Record } from '../record';
-import { TagParser } from '../tag-parser';
-import { TagFactory } from '../tag-factory';
+import { RecordFactory } from '../record-factory.js';
+import { Record } from '../record.js';
+import { TagParser } from '../tag-parser.js';
+import { TagFactory } from '../tag-factory.js';
 import { TagId } from '@misc-poc/shared';
 
 describe('RecordFactory', () => {

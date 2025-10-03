@@ -1,5 +1,5 @@
-import { TagId } from '../tag-id';
-import { generateUuid, isValidUuid } from '../uuid-utils';
+import { TagId } from '../tag-id.js';
+import { generateUuid, isValidUuid } from '../uuid-utils.js';
 
 describe('TagId', () => {
   describe('constructor', () => {

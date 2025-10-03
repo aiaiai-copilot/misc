@@ -1,9 +1,9 @@
 import { TagId, Ok, Err } from '@misc-poc/shared';
 import { Tag, DomainError } from '@misc-poc/domain';
-import { LocalStorageTagRepository } from '../localstorage-tag-repository';
-import { StorageManager } from '../storage-manager';
-import { IndexManager } from '../index-manager';
-import type { StorageSchemaV21 } from '../storage-schema';
+import { LocalStorageTagRepository } from '../localstorage-tag-repository.js';
+import { StorageManager } from '../storage-manager.js';
+import { IndexManager } from '../index-manager.js';
+import type { StorageSchemaV21 } from '../storage-schema.js';
 
 describe('LocalStorageTagRepository', () => {
   let repository: LocalStorageTagRepository;

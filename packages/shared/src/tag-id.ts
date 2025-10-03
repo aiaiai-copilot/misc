@@ -1,4 +1,4 @@
-import { generateUuid, validateUuid } from './uuid-utils';
+import { generateUuid, validateUuid } from './uuid-utils.js';
 
 export class TagId {
   private readonly _value: string;

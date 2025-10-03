@@ -1,18 +1,18 @@
-export { TagNormalizer } from './tag-normalizer';
-export type { TagNormalizerConfig } from './tag-normalizer';
-export { TagValidator } from './tag-validator';
-export type { TagValidationResult } from './tag-validator';
-export { TagParser } from './tag-parser';
-export { Tag } from './tag';
-export { TagFactory } from './tag-factory';
-export { Record } from './record';
-export { RecordFactory } from './record-factory';
-export { RecordDuplicateChecker } from './record-duplicate-checker';
-export { RecordMatcher } from './record-matcher';
+export { TagNormalizer } from './tag-normalizer.js';
+export type { TagNormalizerConfig } from './tag-normalizer.js';
+export { TagValidator } from './tag-validator.js';
+export type { TagValidationResult } from './tag-validator.js';
+export { TagParser } from './tag-parser.js';
+export { Tag } from './tag.js';
+export { TagFactory } from './tag-factory.js';
+export { Record } from './record.js';
+export { RecordFactory } from './record-factory.js';
+export { RecordDuplicateChecker } from './record-duplicate-checker.js';
+export { RecordMatcher } from './record-matcher.js';
 export {
   DomainError,
   InvalidRecordContentError,
   InvalidTagError,
   DuplicateRecordError,
   TagLimitExceededError,
-} from './domain-errors';
+} from './domain-errors.js';
