@@ -1,4 +1,4 @@
-import apiRouter from '../api';
+import apiRouter from '../api.js';
 
 describe('API Router', () => {
   it('should export an Express Router instance', () => {

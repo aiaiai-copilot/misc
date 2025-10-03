@@ -7,18 +7,18 @@ import {
   RecordContent,
 } from '@misc-poc/shared';
 import { DomainError, Record, Tag, TagFactory } from '@misc-poc/domain';
-import { UnitOfWork } from '../ports/unit-of-work';
+import { UnitOfWork } from '../ports/unit-of-work.js';
 import {
   ImportValidator,
   ImportValidationResult,
-} from '../services/import-validator';
-import { RecordDTO } from '../dtos/record-dto';
-import { ExportDTO } from '../dtos/export-dto';
+} from '../services/import-validator.js';
+import { RecordDTO } from '../dtos/record-dto.js';
+import { ExportDTO } from '../dtos/export-dto.js';
 import {
   ImportResultDTO,
   ImportResultDTOMapper,
   ImportWarning,
-} from '../dtos/import-result-dto';
+} from '../dtos/import-result-dto.js';
 
 export interface ImportDataRequest {
   readonly data: ExportDTO | unknown;

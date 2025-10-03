@@ -1,6 +1,6 @@
-import { Tag } from './tag';
-import { TagNormalizer } from './tag-normalizer';
-import { TagValidator, TagValidationResult } from './tag-validator';
+import { Tag } from './tag.js';
+import { TagNormalizer } from './tag-normalizer.js';
+import { TagValidator, TagValidationResult } from './tag-validator.js';
 
 export class TagFactory {
   private readonly normalizer: TagNormalizer;

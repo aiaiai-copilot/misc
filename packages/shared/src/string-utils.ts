@@ -1,4 +1,4 @@
-import { Result, Ok, Err } from './result';
+import { Result, Ok, Err } from './result.js';
 
 export function normalizeString(input: string): string {
   if (input == null) return '';

@@ -6,6 +6,7 @@
     "noEmit": false,
     "composite": true,
     "allowImportingTsExtensions": false,
+    "module": "ES2020",
     "moduleResolution": "node",
     "esModuleInterop": true,
     "allowSyntheticDefaultImports": true,

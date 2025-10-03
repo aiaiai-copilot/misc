@@ -1,4 +1,4 @@
-import { Tag } from '../tag';
+import { Tag } from '../tag.js';
 import { TagId } from '@misc-poc/shared';
 
 describe('Tag', () => {

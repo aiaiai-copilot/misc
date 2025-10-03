@@ -1,6 +1,6 @@
 import { Result, Ok, Err } from '@misc-poc/shared';
 import { DomainError } from '@misc-poc/domain';
-import { TagRepository, TagSuggestion } from '../ports/tag-repository';
+import { TagRepository, TagSuggestion } from '../ports/tag-repository.js';
 
 export interface GetTagSuggestionsOptions {
   readonly limit?: number;

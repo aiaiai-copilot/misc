@@ -16,7 +16,7 @@ vi.mock('sonner', () => {
 });
 
 // Import after mocking
-import { toast, getErrorMessage, resultToast } from '../toast';
+import { toast, getErrorMessage, resultToast } from '../toast.js';
 import { toast as sonnerToast } from 'sonner';
 
 const mockSonnerToast = sonnerToast as any;

@@ -1,9 +1,19 @@
 /** @type {import('jest').Config} */
 export default {
-  preset: 'ts-jest',
+  preset: 'ts-jest/presets/default-esm',
   testEnvironment: 'node',
   roots: ['<rootDir>/src'],
   testMatch: ['**/__tests__/**/*.test.ts'],
+  extensionsToTreatAsEsm: ['.ts'],
+  moduleNameMapper: {
+    '^@misc-poc/shared$': '<rootDir>/../shared/src/index.ts',
+    '^(\\.{1,2}/.*)\\.js$': '$1',
+  },
+  transform: {
+    '^.+\\.ts$': ['ts-jest', {
+      useESM: true,
+    }],
+  },
   collectCoverage: true,
   collectCoverageFrom: [
     'src/**/*.ts',
@@ -23,7 +33,4 @@ export default {
   transformIgnorePatterns: [
     'node_modules/(?!@misc-poc)'
   ],
-  moduleNameMapper: {
-    '^@misc-poc/shared$': '<rootDir>/../shared/src/index.ts'
-  }
 };

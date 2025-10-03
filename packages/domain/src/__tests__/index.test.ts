@@ -14,7 +14,7 @@ import {
   InvalidTagError,
   DuplicateRecordError,
   TagLimitExceededError
-} from '../index';
+} from '../index.js';
 
 describe('index exports', () => {
   it('should export TagNormalizer class', () => {

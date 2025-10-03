@@ -1,6 +1,6 @@
-import { SearchModeDetector, DisplayMode } from '../search-mode-detector';
-import { SearchResultDTO } from '../../dtos/search-result-dto';
-import { RecordDTO } from '../../dtos/record-dto';
+import { SearchModeDetector, DisplayMode } from '../search-mode-detector.js';
+import { SearchResultDTO } from '../../dtos/search-result-dto.js';
+import { RecordDTO } from '../../dtos/record-dto.js';
 
 describe('SearchModeDetector', () => {
   let detector: SearchModeDetector;

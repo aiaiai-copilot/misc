@@ -1,6 +1,6 @@
 import { useState, useEffect, useMemo, useCallback } from 'react';
-import { useApplicationContext } from '../contexts/ApplicationContext';
-import { Record } from '../types/Record';
+import { useApplicationContext } from '../contexts/ApplicationContext.js';
+import { Record } from '../types/Record.js';
 
 interface UseRecordsIntegratedReturn {
   records: Record[];

@@ -11,7 +11,7 @@ import {
   RecordRepository,
   RecordSearchOptions,
   RecordSearchResult,
-} from '../../ports/record-repository';
+} from '../../ports/record-repository.js';
 
 /**
  * Mock implementation of RecordRepository for testing interface contracts

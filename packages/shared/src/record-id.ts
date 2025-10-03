@@ -1,4 +1,4 @@
-import { generateUuid, validateUuid } from './uuid-utils';
+import { generateUuid, validateUuid } from './uuid-utils.js';
 
 export class RecordId {
   private readonly _value: string;

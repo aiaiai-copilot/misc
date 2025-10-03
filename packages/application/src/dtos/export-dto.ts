@@ -1,4 +1,4 @@
-import { RecordDTO } from './record-dto';
+import { RecordDTO } from './record-dto.js';
 
 export interface ExportSchema {
   readonly version: string;

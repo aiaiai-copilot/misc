@@ -1,4 +1,4 @@
-import { Record } from '../record';
+import { Record } from '../record.js';
 import { RecordId, RecordContent, TagId } from '@misc-poc/shared';
 
 describe('Record Entity', () => {

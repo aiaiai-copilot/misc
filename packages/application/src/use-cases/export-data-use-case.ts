@@ -1,9 +1,9 @@
 import { Result, Ok, Err } from '@misc-poc/shared';
 import { DomainError } from '@misc-poc/domain';
-import { RecordRepository } from '../ports/record-repository';
-import { TagRepository } from '../ports/tag-repository';
-import { RecordDTOMapper } from '../dtos/record-dto';
-import { ExportDTO, ExportDTOMapper } from '../dtos/export-dto';
+import { RecordRepository } from '../ports/record-repository.js';
+import { TagRepository } from '../ports/tag-repository.js';
+import { RecordDTOMapper } from '../dtos/record-dto.js';
+import { ExportDTO, ExportDTOMapper } from '../dtos/export-dto.js';
 
 export interface NormalizationSettings {
   readonly caseSensitive: boolean;

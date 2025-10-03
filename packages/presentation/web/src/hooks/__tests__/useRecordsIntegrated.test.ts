@@ -1,7 +1,7 @@
 import { renderHook, waitFor, act } from '@testing-library/react'
 import { vi, describe, it, expect, beforeEach, Mock } from 'vitest'
-import { useRecordsIntegrated } from '../useRecordsIntegrated'
-import { useApplicationContext } from '../../contexts/ApplicationContext'
+import { useRecordsIntegrated } from '../useRecordsIntegrated.js'
+import { useApplicationContext } from '../../contexts/ApplicationContext.js'
 import { Ok, Err } from '@misc-poc/shared'
 import { DomainError } from '@misc-poc/domain'
 

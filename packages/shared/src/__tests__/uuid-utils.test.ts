@@ -1,5 +1,5 @@
-import { generateUuid, validateUuid, isValidUuid, parseUuid } from '../uuid-utils';
-import { Result } from '../result';
+import { generateUuid, validateUuid, isValidUuid, parseUuid } from '../uuid-utils.js';
+import { Result } from '../result.js';
 
 describe('UUID Utilities', () => {
   describe('generateUuid', () => {

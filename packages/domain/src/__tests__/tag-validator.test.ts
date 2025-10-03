@@ -1,4 +1,4 @@
-import { TagValidator } from '../tag-validator';
+import { TagValidator } from '../tag-validator.js';
 
 describe('TagValidator', () => {
   let validator: TagValidator;

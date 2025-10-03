@@ -1,17 +1,17 @@
 import { Ok, Result, RecordId, TagId, SearchQuery } from '@misc-poc/shared';
 import { DomainError, Record, Tag } from '@misc-poc/domain';
-import { UnitOfWork } from '../../ports/unit-of-work';
+import { UnitOfWork } from '../../ports/unit-of-work.js';
 import {
   RecordRepository,
   RecordSearchOptions,
   RecordSearchResult,
-} from '../../ports/record-repository';
+} from '../../ports/record-repository.js';
 import {
   TagRepository,
   TagSearchOptions,
   TagUsageInfo,
   TagSuggestion,
-} from '../../ports/tag-repository';
+} from '../../ports/tag-repository.js';
 
 /**
  * Mock implementations for testing

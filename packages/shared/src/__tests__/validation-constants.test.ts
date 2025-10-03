@@ -1,4 +1,4 @@
-import { ValidationConstants, ValidationRules } from '../validation-constants';
+import { ValidationConstants, ValidationRules } from '../validation-constants.js';
 
 describe('Validation Constants', () => {
   describe('ValidationConstants', () => {

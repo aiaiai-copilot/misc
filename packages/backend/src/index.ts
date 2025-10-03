@@ -1,8 +1,8 @@
 import express from 'express';
 import cors from 'cors';
 import dotenv from 'dotenv';
-import apiRouter from './routes/api';
-import { errorHandler, notFoundHandler } from './middleware/errorHandler';
+import apiRouter from './routes/api.js';
+import { errorHandler, notFoundHandler } from './middleware/errorHandler.js';
 
 dotenv.config();
 

@@ -5,6 +5,8 @@
     "rootDir": "./src",
     "noEmit": false,
     "composite": true,
+    "module": "ES2020",
+    "moduleResolution": "node",
     "allowImportingTsExtensions": false
   },
   "include": ["src/**/*"],

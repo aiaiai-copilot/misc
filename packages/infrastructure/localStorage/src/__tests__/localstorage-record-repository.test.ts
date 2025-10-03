@@ -7,10 +7,10 @@ import {
   Err,
 } from '@misc-poc/shared';
 import { Record, Tag, DomainError } from '@misc-poc/domain';
-import { LocalStorageRecordRepository } from '../localstorage-record-repository';
-import { StorageManager } from '../storage-manager';
-import { IndexManager } from '../index-manager';
-import type { StorageSchemaV21 } from '../storage-schema';
+import { LocalStorageRecordRepository } from '../localstorage-record-repository.js';
+import { StorageManager } from '../storage-manager.js';
+import { IndexManager } from '../index-manager.js';
+import type { StorageSchemaV21 } from '../storage-schema.js';
 
 describe('LocalStorageRecordRepository', () => {
   let repository: LocalStorageRecordRepository;

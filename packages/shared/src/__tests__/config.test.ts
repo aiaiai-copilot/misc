@@ -1,4 +1,4 @@
-import { DefaultConfig, createConfig } from '../config';
+import { DefaultConfig, createConfig } from '../config.js';
 
 describe('Configuration', () => {
   describe('DefaultConfig', () => {

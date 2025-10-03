@@ -1,14 +1,14 @@
 import { Result, Ok, Err } from '@misc-poc/shared';
 import { DomainError, Record, Tag } from '@misc-poc/domain';
-import { RecordRepository } from '../../ports/record-repository';
-import { TagRepository } from '../../ports/tag-repository';
-import { RecordDTO, RecordDTOMapper } from '../../dtos/record-dto';
-import { ExportDTO } from '../../dtos/export-dto';
+import { RecordRepository } from '../../ports/record-repository.js';
+import { TagRepository } from '../../ports/tag-repository.js';
+import { RecordDTO, RecordDTOMapper } from '../../dtos/record-dto.js';
+import { ExportDTO } from '../../dtos/export-dto.js';
 import {
   ExportDataUseCase,
   ExportDataRequest,
   ExportDataResponse,
-} from '../export-data-use-case';
+} from '../export-data-use-case.js';
 
 // Mock implementations
 class MockRecordRepository implements RecordRepository {

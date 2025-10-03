@@ -1,5 +1,5 @@
-import { normalizeString, slugify, truncate, sanitizeInput, isEmptyOrWhitespace } from '../string-utils';
-import { Result } from '../result';
+import { normalizeString, slugify, truncate, sanitizeInput, isEmptyOrWhitespace } from '../string-utils.js';
+import { Result } from '../result.js';
 
 describe('String Utilities', () => {
   describe('normalizeString', () => {

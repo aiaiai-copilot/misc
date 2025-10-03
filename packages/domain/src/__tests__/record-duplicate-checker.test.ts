@@ -1,5 +1,5 @@
-import { RecordDuplicateChecker } from '../record-duplicate-checker';
-import { Record } from '../record';
+import { RecordDuplicateChecker } from '../record-duplicate-checker.js';
+import { Record } from '../record.js';
 import { RecordId, RecordContent, TagId } from '@misc-poc/shared';
 
 describe('RecordDuplicateChecker Domain Service', () => {
