@@ -365,6 +365,27 @@ export class PostgresRecordRepository implements RecordRepository {
     }
   }
 
+  async getTagStatistics(): Promise<Result<Array<{ tag: string; count: number }>, DomainError>> {
+    try {
+      // Use UNNEST to expand the normalized_tags array and count occurrences
+      const result = await this.pool.query<{ tag: string; count: string }>(
+        `SELECT tag, COUNT(*) as count
+         FROM records, UNNEST(normalized_tags) AS tag
+         GROUP BY tag
+         ORDER BY count DESC, tag ASC`
+      );
+
+      const statistics = result.rows.map(row => ({
+        tag: row.tag,
+        count: parseInt(row.count, 10),
+      }));
+
+      return Ok(statistics);
+    } catch (error) {
+      return this.handleError('Failed to get tag statistics', error);
+    }
+  }
+
   private handleError(
     message: string,
     error: unknown

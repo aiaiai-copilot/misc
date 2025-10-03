@@ -183,6 +183,24 @@ router.delete('/records/:id', async (req: Request, res: Response) => {
   }
 });
 
-// Tags routes will be added in subsequent subtasks
+// GET /api/tags - Get tag statistics for tag cloud
+router.get('/tags', async (_req: Request, res: Response) => {
+  try {
+    const repository = getRecordRepository();
+    const result = await repository.getTagStatistics();
+
+    if (result.isErr()) {
+      const error = result.unwrapErr();
+      res.status(500).json({ error: error.message });
+      return;
+    }
+
+    const statistics = result.unwrap();
+    res.json(statistics);
+  } catch (error) {
+    const message = error instanceof Error ? error.message : 'Unknown error';
+    res.status(500).json({ error: `Failed to fetch tag statistics: ${message}` });
+  }
+});
 
 export default router;

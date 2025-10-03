@@ -187,7 +187,7 @@
               "4.1"
             ],
             "details": "Implement GET /api/tags endpoint that queries database for tag usage statistics. Return array of {tag: string, count: number} objects. Use PostgreSQL queries to aggregate tag counts from normalized_tags array field.",
-            "status": "pending",
+            "status": "done",
             "testStrategy": "Integration tests for tag statistics endpoint covering various tag usage scenarios"
           },
           {
@@ -295,11 +295,22 @@
         ],
         "status": "pending",
         "subtasks": []
+      },
+      {
+        "id": 11,
+        "title": "Fix ES Module Resolution Errors in TypeScript Compilation",
+        "description": "Resolve ES module resolution error preventing backend server startup caused by TypeScript emitting imports without .js extensions while Node.js ESM requires them.",
+        "details": "The monorepo has mixed module configurations causing ES module resolution issues. The domain package uses 'type: module' (ESM) but TypeScript compiles imports without .js extensions, while Node.js ESM requires explicit extensions. The backend package uses CommonJS but imports from ESM packages. Fix by implementing one of two solutions: (1) Configure TypeScript with 'moduleResolution: bundler' and 'allowImportingTsExtensions: false' in all packages that need to emit .js extensions, and ensure consistent module type across packages, or (2) Remove 'type: module' from all package.json files and standardize on CommonJS. Update tsconfig.json files across packages/domain, packages/backend, packages/infrastructure/postgresql to use consistent module resolution. Ensure all cross-package imports work correctly after changes. Test with 'yarn build' and verify backend starts successfully with 'node packages/backend/dist/index.js'.",
+        "testStrategy": "Run 'yarn build' to verify all packages compile without module resolution errors. Test backend startup with 'node packages/backend/dist/index.js' to confirm server starts successfully. Verify all package imports work correctly by running 'yarn typecheck' across all workspaces. Run integration tests to ensure cross-package dependencies function properly. Check that both CommonJS require() and ESM import statements work as expected throughout the codebase.",
+        "status": "pending",
+        "dependencies": [],
+        "priority": "high",
+        "subtasks": []
       }
     ],
     "metadata": {
       "created": "2025-10-02T17:53:14.910Z",
-      "updated": "2025-10-03T05:22:49.337Z",
+      "updated": "2025-10-03T07:33:24.133Z",
       "description": "Tasks for master context"
     }
   }
