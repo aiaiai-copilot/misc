@@ -35,13 +35,16 @@
 **All code must pass quality checks before commit**
 
 - **Standard validation**: `yarn validate` (build + typecheck + lint + test)
-  - Excludes performance tests tagged with `[perf]` for faster feedback
-  - Use during development for quick validation
-  - **⚠️ Only for non-critical changes** (UI fixes, documentation, simple logic)
-
-- **Comprehensive validation**: `yarn validate:all` (build + typecheck + lint + test:all)
   - Includes ALL tests (regular + performance + integration)
-  - **🔴 MANDATORY for these changes:**
+  - Use for most development work
+
+- **Fast validation**: `yarn validate:fast` (build + typecheck + lint + test:fast)
+  - Excludes performance tests tagged with `[perf]` for faster feedback
+  - Use during iterative development for quick validation
+  - **⚠️ Only for non-critical changes** (UI fixes, documentation, simple logic)
+  - **🔴 MANDATORY to run full validation before commit**
+
+- **Standard validation is MANDATORY for these changes:**
     - Database schema, migrations, or queries
     - Repository implementations or data access layer
     - Performance-critical code or optimizations
@@ -54,7 +57,7 @@
 - No commit should be made if any check fails
 - Fix all errors before proceeding
 
-**🔴 CRITICAL RULE: When in doubt, use `yarn validate:all`**
+**🔴 CRITICAL RULE: When in doubt, use `yarn validate` (full validation)**
 
 If your changes involve:
 
@@ -64,20 +67,20 @@ If your changes involve:
 - ❌ Repository layer or data access
 - ❌ Batch operations or large datasets
 
-→ **You MUST run `yarn validate:all`** to ensure integration tests pass!
+→ **You MUST run `yarn validate`** to ensure all tests pass!
 
 **Test Script Variants:**
 
 ```bash
-yarn test        # Regular tests only (excludes [perf] tagged tests)
+yarn test        # All tests (regular + performance)
+yarn test:fast   # Fast tests only (excludes [perf] tagged tests)
 yarn test:perf   # Performance tests only ([perf] tagged tests)
-yarn test:all    # All tests (regular + performance)
 ```
 
 See [.claude/TEST-TAGGING-EXAMPLES.md](.claude/TEST-TAGGING-EXAMPLES.md) for details on performance test tagging.
 
 **🔴 CRITICAL**: See [.claude/VALIDATION-RULES.md](.claude/VALIDATION-RULES.md) for **mandatory** validation rules.
-**Future sessions: READ THIS DOCUMENT to understand when `validate:all` is REQUIRED!**
+**Future sessions: READ THIS DOCUMENT to understand when `validate` (full) is REQUIRED!**
 
 #### 🔴 CRITICAL: Test Validation Protocol
 

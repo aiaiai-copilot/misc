@@ -27,8 +27,8 @@ Begin work on the next task following TaskMaster workflow rules.
      - Fast local checks (~30 seconds)
 
   2. **For database/performance/integration changes**:
-     - **🔴 MANDATORY**: Run from root: `yarn validate:all` (~6-8 minutes)
-     - **MUST use `validate:all` when changing:**
+     - **🔴 MANDATORY**: Run from root: `yarn validate` (~6-8 minutes)
+     - **MUST use `validate` (full) when changing:**
        - Database (schema, migrations, queries, indexes)
        - Repository layer or data access code
        - Performance code (query optimization, caching)
@@ -38,8 +38,8 @@ Begin work on the next task following TaskMaster workflow rules.
        - Any code tested by Testcontainers
 
   3. **For other multi-package changes**:
-     - **Fast option**: `yarn validate` (~2-3 minutes, skips [perf] tests)
-     - **When in doubt**: `yarn validate:all` (safer, includes integration)
+     - **Fast option**: `yarn validate:fast` (~2-3 minutes, excludes [perf] tests)
+     - **When in doubt**: `yarn validate` (safer, includes all tests)
 
 - **If ANY command fails**, fix errors before proceeding
 - **This applies to EVERY subtask and main task**
@@ -190,9 +190,9 @@ Begin work on the next task following TaskMaster workflow rules.
   - [ ] Time saved: ~30 seconds vs ~2-3 minutes for full check
   - [ ] Optional: Run full monorepo check if critical changes
 - [ ] **Multi-package or root changes**:
-  - [ ] **Fast validation**: `yarn validate` (~2-3 minutes, skips [perf] tests)
-  - [ ] **OR Complete validation**: `yarn validate:all` (~6-8 minutes, all tests)
-  - [ ] Use `validate` during development, `validate:all` before final commit
+  - [ ] **Fast validation**: `yarn validate:fast` (~2-3 minutes, excludes [perf] tests)
+  - [ ] **OR Complete validation**: `yarn validate` (~6-8 minutes, all tests)
+  - [ ] Use `validate:fast` during development, `validate` before final commit
 - [ ] **If integration tests fail**:
   - [ ] Check Docker status: `docker ps`
   - [ ] If Docker not running, ask user: `sudo service docker start`

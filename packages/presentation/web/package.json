@@ -10,6 +10,8 @@
     "build:analyze": "vite build && open dist/bundle-analysis.html",
     "preview": "vite preview",
     "test": "vitest",
+    "test:fast": "vitest -t '^((?!\\[perf\\]).)*$'",
+    "test:perf": "vitest -t '\\[perf\\]'",
     "test:ui": "vitest --ui",
     "test:coverage": "vitest --coverage",
     "lint": "eslint src --ext .ts,.tsx",

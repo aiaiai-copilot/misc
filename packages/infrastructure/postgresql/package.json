@@ -8,8 +8,8 @@
   "scripts": {
     "build": "sh -c 'if test -d src; then yarn exec tsc --build; else echo \"No src directory found, skipping build\"; fi'",
     "test": "jest",
+    "test:fast": "jest --testNamePattern='^((?!\\[perf\\]).)*$'",
     "test:perf": "jest --testNamePattern='\\[perf\\]'",
-    "test:all": "jest --testNamePattern='.*'",
     "lint": "sh -c 'if test -d src; then cd ../../../.. && yarn exec eslint packages/infrastructure/postgresql/src --ext .ts; else echo \"No src directory found, skipping lint\"; fi'",
     "typecheck": "sh -c 'if test -d src; then cd ../../.. && yarn tsc --noEmit --project packages/infrastructure/postgresql; else echo \"No src directory found, skipping typecheck\"; fi'",
     "clean": "rm -rf dist tsconfig.tsbuildinfo"

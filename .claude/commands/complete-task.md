@@ -23,14 +23,14 @@ yarn build && yarn typecheck && yarn lint && yarn test
 ##### For multi-package or critical changes
 
 ```bash
-# Fast validation (excludes integration/perf tests: ~2-3 minutes)
-yarn validate
+# Fast validation (excludes [perf] tests: ~2-3 minutes)
+yarn validate:fast
 
 # Full validation (includes all tests: ~6-8 minutes)
-yarn validate:all
+yarn validate
 ```
 
-**🔴 MANDATORY: Use `yarn validate:all` for these changes:**
+**🔴 MANDATORY: Use `yarn validate` (full) for these changes:**
 
 - Database schema, migrations, queries, or indexes
 - Repository implementations or data access layer
@@ -41,7 +41,7 @@ yarn validate:all
 - Batch operations or large dataset processing
 - Any code touching PostgreSQL/Redis Testcontainers
 
-**⚠️ Use `yarn validate` (fast) ONLY for:**
+**⚠️ Use `yarn validate:fast` ONLY for:**
 
 - UI/frontend changes without backend impact
 - Documentation updates
@@ -50,14 +50,15 @@ yarn validate:all
 
 **Validation Scripts:**
 
-- `yarn validate` = `yarn build && yarn typecheck && yarn lint && yarn test` (fast, skips [perf])
-- `yarn validate:all` = `yarn build && yarn typecheck && yarn lint && yarn test:all` (includes integration)
-- **When in doubt → use `yarn validate:all`**
+- `yarn validate` = `yarn build && yarn typecheck && yarn lint && yarn test` (all tests, default)
+- `yarn validate:fast` = `yarn build && yarn typecheck && yarn lint && yarn test:fast` (excludes [perf])
+- `yarn test:perf` = only performance tests
+- **When in doubt → use `yarn validate`** (full validation)
 
 ##### Smart validation tips
 
 - Local package checks catch 95% of issues for simple changes
-- **ALWAYS use full validation** (`validate:all`) for:
+- **ALWAYS use full validation** (`validate`) for:
   - Database-related changes
   - Performance-critical code
   - Integration layer changes

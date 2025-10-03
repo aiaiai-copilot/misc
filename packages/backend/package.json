@@ -9,6 +9,8 @@
     "build": "tsc",
     "start": "node dist/index.js",
     "test": "jest",
+    "test:fast": "jest --testNamePattern='^((?!\\[perf\\]).)*$'",
+    "test:perf": "jest --testNamePattern='\\[perf\\]'",
     "typecheck": "tsc --noEmit",
     "lint": "eslint 'src/**/*.ts'"
   },

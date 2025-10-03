@@ -8,6 +8,8 @@
   "scripts": {
     "build": "test -d src && yarn exec tsc --build",
     "test": "jest",
+    "test:fast": "jest --testNamePattern='^((?!\\[perf\\]).)*$'",
+    "test:perf": "jest --testNamePattern='\\[perf\\]'",
     "lint": "test -d src && cd ../../.. && yarn exec eslint packages/domain/src --ext .ts",
     "typecheck": "yarn exec tsc --noEmit",
     "clean": "rm -rf dist tsconfig.tsbuildinfo"
