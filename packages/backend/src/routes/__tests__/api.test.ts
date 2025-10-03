@@ -19,20 +19,26 @@ describe('API Router', () => {
 
   it('should have registered routes', () => {
     // Access the router's stack to verify routes are registered
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    const stack = (apiRouter as any).stack;
+    interface Layer {
+      route?: {
+        path: string;
+        methods: Record<string, boolean>;
+      };
+    }
+
+    const stack = (apiRouter as { stack: Layer[] }).stack;
     expect(stack).toBeDefined();
     expect(Array.isArray(stack)).toBe(true);
     expect(stack.length).toBeGreaterThan(0);
 
     // Verify specific routes exist
-    const routes = stack.map((layer: any) => ({
+    const routes = stack.map((layer: Layer) => ({
       path: layer.route?.path,
       methods: layer.route ? Object.keys(layer.route.methods) : []
-    })).filter((r: any) => r.path);
+    })).filter((r) => r.path);
 
     // Check for expected endpoints
-    const paths = routes.map((r: any) => r.path);
+    const paths = routes.map((r) => r.path);
     expect(paths).toContain('/records');
     expect(paths).toContain('/records/:id');
     expect(paths).toContain('/tags');
