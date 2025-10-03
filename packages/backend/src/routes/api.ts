@@ -3,6 +3,7 @@ import { PostgresRecordRepository } from '@misc-poc/infrastructure-postgresql';
 import { RecordContent, RecordId, SearchQuery } from '@misc-poc/shared';
 import { Record } from '@misc-poc/domain';
 import { getDatabasePool } from '../services/database';
+import { validateUuidParam, validateRecordBody, validateSearchQuery } from '../middleware/validation';
 
 const router = Router();
 
@@ -13,23 +14,13 @@ const getRecordRepository = (): PostgresRecordRepository => {
 };
 
 // GET /api/records - Search/list records with pagination
-router.get('/records', async (req: Request, res: Response) => {
+router.get('/records', validateSearchQuery, async (req: Request, res: Response) => {
   try {
     const repository = getRecordRepository();
     const { q, limit = '100', offset = '0' } = req.query;
 
     const parsedLimit = parseInt(limit as string, 10);
     const parsedOffset = parseInt(offset as string, 10);
-
-    if (isNaN(parsedLimit) || parsedLimit < 0) {
-      res.status(400).json({ error: 'Invalid limit parameter' });
-      return;
-    }
-
-    if (isNaN(parsedOffset) || parsedOffset < 0) {
-      res.status(400).json({ error: 'Invalid offset parameter' });
-      return;
-    }
 
     let result;
     if (q && typeof q === 'string' && q.trim().length > 0) {
@@ -57,15 +48,10 @@ router.get('/records', async (req: Request, res: Response) => {
 });
 
 // POST /api/records - Create a new record
-router.post('/records', async (req: Request, res: Response) => {
+router.post('/records', validateRecordBody, async (req: Request, res: Response) => {
   try {
     const repository = getRecordRepository();
     const { content } = req.body;
-
-    if (!content || typeof content !== 'string') {
-      res.status(400).json({ error: 'Content is required and must be a string' });
-      return;
-    }
 
     // Create record content and extract tag IDs from content
     const recordContent = new RecordContent(content);
@@ -90,25 +76,13 @@ router.post('/records', async (req: Request, res: Response) => {
 });
 
 // PUT /api/records/:id - Update an existing record
-router.put('/records/:id', async (req: Request, res: Response) => {
+router.put('/records/:id', validateUuidParam('id'), validateRecordBody, async (req: Request, res: Response) => {
   try {
     const repository = getRecordRepository();
     const { id } = req.params;
     const { content } = req.body;
 
-    // Validate UUID
-    let recordId: RecordId;
-    try {
-      recordId = new RecordId(id);
-    } catch {
-      res.status(400).json({ error: 'Invalid record ID format' });
-      return;
-    }
-
-    if (!content || typeof content !== 'string') {
-      res.status(400).json({ error: 'Content is required and must be a string' });
-      return;
-    }
+    const recordId = new RecordId(id);
 
     // Find existing record
     const findResult = await repository.findById(recordId);
@@ -150,19 +124,12 @@ router.put('/records/:id', async (req: Request, res: Response) => {
 });
 
 // DELETE /api/records/:id - Delete a record
-router.delete('/records/:id', async (req: Request, res: Response) => {
+router.delete('/records/:id', validateUuidParam('id'), async (req: Request, res: Response) => {
   try {
     const repository = getRecordRepository();
     const { id } = req.params;
 
-    // Validate UUID
-    let recordId: RecordId;
-    try {
-      recordId = new RecordId(id);
-    } catch {
-      res.status(400).json({ error: 'Invalid record ID format' });
-      return;
-    }
+    const recordId = new RecordId(id);
 
     const result = await repository.delete(recordId);
 
