@@ -90,8 +90,62 @@
         "dependencies": [
           2
         ],
-        "status": "pending",
-        "subtasks": []
+        "status": "done",
+        "subtasks": [
+          {
+            "id": 1,
+            "title": "Create PostgreSQL package structure and configuration",
+            "description": "Set up packages/infrastructure/postgresql directory with package.json, TypeScript configuration, and pg library dependency",
+            "dependencies": [],
+            "details": "Create the basic package structure following the existing infrastructure package patterns. Include package.json with proper dependencies (pg, @types/pg), TypeScript configuration, and Jest setup. Configure the package to export the PostgresRecordRepository as the main implementation.",
+            "status": "done",
+            "testStrategy": "Verify package builds without errors and exports are properly defined"
+          },
+          {
+            "id": 2,
+            "title": "Implement PostgreSQL connection management",
+            "description": "Create connection pool configuration and database connection utilities",
+            "dependencies": [
+              "3.1"
+            ],
+            "details": "Implement connection pooling using pg.Pool with proper configuration for the PostgreSQL database. Handle connection string configuration, connection timeout, and proper cleanup. Use the database credentials from docker-compose.yml (user: misc, password: misc_password, database: misc, host: localhost, port: 5432).",
+            "status": "done",
+            "testStrategy": "Test connection pool creation, connection acquisition/release, and proper error handling for connection failures"
+          },
+          {
+            "id": 3,
+            "title": "Implement record-to-database mapping utilities",
+            "description": "Create mapping functions between domain Record objects and database rows",
+            "dependencies": [
+              "3.2"
+            ],
+            "details": "Implement bidirectional mapping between the domain Record class (with RecordId, RecordContent, Set<TagId>, createdAt, updatedAt) and database rows (id UUID, content TEXT, tags TEXT[], normalized_tags TEXT[], created_at TIMESTAMP, updated_at TIMESTAMP). Handle proper conversion of TagId objects to strings and back, convert Set<TagId> to TEXT[] arrays, and manage timestamp conversion.",
+            "status": "done",
+            "testStrategy": "Test mapping functions with various Record objects, verify tag array conversion, timestamp handling, and UUID conversion"
+          },
+          {
+            "id": 4,
+            "title": "Implement PostgresRecordRepository CRUD operations",
+            "description": "Implement all RecordRepository interface methods with PostgreSQL queries",
+            "dependencies": [
+              "3.3"
+            ],
+            "details": "Implement all methods from RecordRepository interface: findById, findAll, search, findByTagIds, findByTagSet, save, update, delete, saveBatch, deleteAll, count, exists. Use proper SQL queries with parameterized statements, handle the Result<T, DomainError> pattern for all operations, and implement proper error handling for database errors (connection issues, constraint violations, etc.).",
+            "status": "done",
+            "testStrategy": "Unit tests for each repository method using mocked database connections, verify proper SQL query generation and parameter binding"
+          },
+          {
+            "id": 5,
+            "title": "Implement integration tests with Testcontainers",
+            "description": "Create comprehensive integration tests using real PostgreSQL database",
+            "dependencies": [
+              "3.4"
+            ],
+            "details": "Set up integration tests using Testcontainers to spin up a real PostgreSQL instance. Test all CRUD operations against the actual database schema from init.sql. Verify tag search functionality using GIN indexes, test bulk operations, concurrent access scenarios, and proper error handling. Ensure tests clean up properly and run in isolation.",
+            "status": "done",
+            "testStrategy": "Integration tests covering all repository methods, tag search with complex queries, bulk operations, error scenarios (duplicate normalized_tags), and performance with large datasets"
+          }
+        ]
       },
       {
         "id": 4,
@@ -188,7 +242,7 @@
     ],
     "metadata": {
       "created": "2025-10-02T17:53:14.910Z",
-      "updated": "2025-10-02T20:39:31.627Z",
+      "updated": "2025-10-03T03:54:07.864Z",
       "description": "Tasks for master context"
     }
   }
