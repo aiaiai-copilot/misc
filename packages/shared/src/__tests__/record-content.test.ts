@@ -1,4 +1,4 @@
-import { RecordContent } from '../record-content';
+import { RecordContent } from '../record-content.js';
 
 describe('RecordContent', () => {
   describe('constructor', () => {

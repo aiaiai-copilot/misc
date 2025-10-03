@@ -1,6 +1,6 @@
 import { Result, Ok, Err } from '@misc-poc/shared';
 import { DomainError } from '@misc-poc/domain';
-import { RecordDTO } from '../dtos/record-dto';
+import { RecordDTO } from '../dtos/record-dto.js';
 
 export interface ImportValidationError {
   readonly type: string;

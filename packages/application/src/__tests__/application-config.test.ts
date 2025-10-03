@@ -3,7 +3,7 @@ import {
   DefaultApplicationConfig,
   createApplicationConfig,
   ApplicationConfigOptions,
-} from '../application-config';
+} from '../application-config.js';
 
 describe('ApplicationConfig', () => {
   describe('DefaultApplicationConfig', () => {

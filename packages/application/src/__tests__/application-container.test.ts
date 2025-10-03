@@ -3,17 +3,17 @@ import {
   DependencyDescriptor,
   ServiceLifetime,
   DependencyKey,
-} from '../application-container';
+} from '../application-container.js';
 import {
   ApplicationConfig,
   ApplicationConfigData,
-} from '../application-config';
-import { RecordRepository } from '../ports/record-repository';
-import { TagRepository } from '../ports/tag-repository';
-import { UnitOfWork } from '../ports/unit-of-work';
-import { CreateRecordUseCase } from '../use-cases/create-record-use-case';
-import { SearchRecordsUseCase } from '../use-cases/search-records-use-case';
-import { SearchModeDetector } from '../services/search-mode-detector';
+} from '../application-config.js';
+import { RecordRepository } from '../ports/record-repository.js';
+import { TagRepository } from '../ports/tag-repository.js';
+import { UnitOfWork } from '../ports/unit-of-work.js';
+import { CreateRecordUseCase } from '../use-cases/create-record-use-case.js';
+import { SearchRecordsUseCase } from '../use-cases/search-records-use-case.js';
+import { SearchModeDetector } from '../services/search-mode-detector.js';
 import { Result, Ok, Err } from '@misc-poc/shared';
 
 describe('ApplicationContainer', () => {

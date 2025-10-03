@@ -1,5 +1,5 @@
-import { RecordDTO } from './record-dto';
-import { ValidationResultDTO } from './validation-result-dto';
+import { RecordDTO } from './record-dto.js';
+import { ValidationResultDTO } from './validation-result-dto.js';
 
 export interface ImportWarning {
   readonly message: string;

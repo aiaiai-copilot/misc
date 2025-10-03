@@ -1,9 +1,9 @@
-import { SearchResultDTO } from '../dtos/search-result-dto';
+import { SearchResultDTO } from '../dtos/search-result-dto.js';
 import {
   TagCloudItemDTO,
   TagCloudItemDTOMapper,
-} from '../dtos/tag-cloud-item-dto';
-import { TagRepository, TagUsageInfo } from '../ports/tag-repository';
+} from '../dtos/tag-cloud-item-dto.js';
+import { TagRepository, TagUsageInfo } from '../ports/tag-repository.js';
 
 export interface TagCloudBuilderConfig {
   readonly maxCloudSize: number;

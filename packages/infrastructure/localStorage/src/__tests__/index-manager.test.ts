@@ -1,5 +1,5 @@
-import { IndexManager } from '../index-manager';
-import { StorageSchema, type StorageSchemaV21 } from '../storage-schema';
+import { IndexManager } from '../index-manager.js';
+import { StorageSchema, type StorageSchemaV21 } from '../storage-schema.js';
 
 describe('IndexManager', () => {
   let indexManager: IndexManager;

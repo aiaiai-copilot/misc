@@ -2,9 +2,9 @@ import { Router, Request, Response } from 'express';
 import { PostgresRecordRepository } from '@misc-poc/infrastructure-postgresql';
 import { RecordContent, RecordId, SearchQuery } from '@misc-poc/shared';
 import { Record } from '@misc-poc/domain';
-import { getDatabasePool } from '../services/database';
-import { validateUuidParam, validateRecordBody, validateSearchQuery } from '../middleware/validation';
-import { asyncHandler } from '../middleware/errorHandler';
+import { getDatabasePool } from '../services/database.js';
+import { validateUuidParam, validateRecordBody, validateSearchQuery } from '../middleware/validation.js';
+import { asyncHandler } from '../middleware/errorHandler.js';
 
 const router = Router();
 

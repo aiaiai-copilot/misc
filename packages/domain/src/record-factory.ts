@@ -1,6 +1,6 @@
-import { Record } from './record';
-import { TagParser } from './tag-parser';
-import { TagFactory } from './tag-factory';
+import { Record } from './record.js';
+import { TagParser } from './tag-parser.js';
+import { TagFactory } from './tag-factory.js';
 import { RecordContent, TagId } from '@misc-poc/shared';
 
 export class RecordFactory {

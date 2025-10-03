@@ -9,10 +9,10 @@ import {
 } from '@misc-poc/shared';
 import { Record, Tag, DomainError } from '@misc-poc/domain';
 import { UnitOfWork } from '@misc-poc/application';
-import { LocalStorageUnitOfWork } from '../localstorage-unit-of-work';
-import { StorageManager } from '../storage-manager';
-import { IndexManager } from '../index-manager';
-import type { StorageSchemaV21 } from '../storage-schema';
+import { LocalStorageUnitOfWork } from '../localstorage-unit-of-work.js';
+import { StorageManager } from '../storage-manager.js';
+import { IndexManager } from '../index-manager.js';
+import type { StorageSchemaV21 } from '../storage-schema.js';
 
 describe('LocalStorageUnitOfWork', () => {
   let unitOfWork: LocalStorageUnitOfWork;

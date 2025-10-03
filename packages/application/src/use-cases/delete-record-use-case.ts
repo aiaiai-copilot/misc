@@ -1,7 +1,7 @@
 import { Result, RecordId, Ok, Err } from '@misc-poc/shared';
 import { DomainError } from '@misc-poc/domain';
-import { RecordRepository } from '../ports/record-repository';
-import { UnitOfWork } from '../ports/unit-of-work';
+import { RecordRepository } from '../ports/record-repository.js';
+import { UnitOfWork } from '../ports/unit-of-work.js';
 
 export interface DeleteRecordRequest {
   readonly id: string;

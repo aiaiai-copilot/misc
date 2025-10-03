@@ -1,9 +1,9 @@
 import { Result, RecordContent, TagId, Ok, Err } from '@misc-poc/shared';
 import { Record, Tag, TagFactory, TagParser, DomainError } from '@misc-poc/domain';
-import { RecordRepository } from '../ports/record-repository';
-import { TagRepository } from '../ports/tag-repository';
-import { UnitOfWork } from '../ports/unit-of-work';
-import { RecordDTO, RecordDTOMapper } from '../dtos/record-dto';
+import { RecordRepository } from '../ports/record-repository.js';
+import { TagRepository } from '../ports/tag-repository.js';
+import { UnitOfWork } from '../ports/unit-of-work.js';
+import { RecordDTO, RecordDTOMapper } from '../dtos/record-dto.js';
 
 export interface CreateRecordRequest {
   readonly content: string;

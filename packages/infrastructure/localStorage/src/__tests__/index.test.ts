@@ -1,4 +1,4 @@
-import * as LocalStorageModule from '../index';
+import * as LocalStorageModule from '../index.js';
 
 describe('LocalStorage Infrastructure Module Exports', () => {
   it('should export StorageSchema', () => {

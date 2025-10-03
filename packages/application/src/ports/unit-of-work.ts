@@ -1,7 +1,7 @@
 import { Result } from '@misc-poc/shared';
 import { DomainError } from '@misc-poc/domain';
-import { RecordRepository } from './record-repository';
-import { TagRepository } from './tag-repository';
+import { RecordRepository } from './record-repository.js';
+import { TagRepository } from './tag-repository.js';
 
 export interface UnitOfWork {
   /**

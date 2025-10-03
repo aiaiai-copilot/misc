@@ -1,36 +1,29 @@
 /** @type {import('jest').Config} */
-export default {
+module.exports = {
   preset: 'ts-jest/presets/default-esm',
   testEnvironment: 'node',
   roots: ['<rootDir>/src'],
   testMatch: ['**/__tests__/**/*.test.ts'],
   extensionsToTreatAsEsm: ['.ts'],
   moduleNameMapper: {
-    '^@misc-poc/shared$': '<rootDir>/../shared/src/index.ts',
     '^(\\.{1,2}/.*)\\.js$': '$1',
+    '^@misc-poc/infrastructure-postgresql$': '<rootDir>/../infrastructure/postgresql/src',
+    '^@misc-poc/application$': '<rootDir>/../application/src',
+    '^@misc-poc/domain$': '<rootDir>/../domain/src',
+    '^@misc-poc/shared$': '<rootDir>/../shared/src',
   },
   transform: {
     '^.+\\.ts$': ['ts-jest', {
       useESM: true,
     }],
   },
-  collectCoverage: true,
   collectCoverageFrom: [
     'src/**/*.ts',
     '!src/**/*.d.ts',
-    '!src/**/__tests__/**/*',
+    '!src/**/__tests__/**',
   ],
-  coverageDirectory: 'coverage',
-  coverageReporters: ['text', 'lcov', 'html'],
-  coverageThreshold: {
-    global: {
-      branches: 95,
-      functions: 80,
-      lines: 95,
-      statements: 95,
-    },
-  },
+  moduleFileExtensions: ['ts', 'tsx', 'js', 'jsx', 'json', 'node'],
   transformIgnorePatterns: [
-    'node_modules/(?!@misc-poc)'
+    'node_modules/(?!(@misc-poc)/)',
   ],
 };

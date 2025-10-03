@@ -3,11 +3,11 @@ import { DomainError } from '@misc-poc/domain';
 import {
   RecordRepository,
   RecordSearchOptions,
-} from '../ports/record-repository';
+} from '../ports/record-repository.js';
 import {
   SearchResultDTO,
   SearchResultDTOMapper,
-} from '../dtos/search-result-dto';
+} from '../dtos/search-result-dto.js';
 
 export interface SearchRecordsRequest {
   readonly query: string;

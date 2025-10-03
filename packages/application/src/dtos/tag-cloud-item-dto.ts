@@ -1,4 +1,4 @@
-import { TagUsageInfo } from '../ports/tag-repository';
+import { TagUsageInfo } from '../ports/tag-repository.js';
 
 export interface TagCloudItemDTO {
   readonly id: string;

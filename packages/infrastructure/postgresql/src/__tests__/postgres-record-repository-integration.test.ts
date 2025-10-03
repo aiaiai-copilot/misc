@@ -12,7 +12,7 @@
 import { Pool } from 'pg';
 import { PostgreSqlContainer } from '@testcontainers/postgresql';
 import type { StartedPostgreSqlContainer } from '@testcontainers/postgresql';
-import { PostgresRecordRepository } from '../postgres-record-repository';
+import { PostgresRecordRepository } from '../postgres-record-repository.js';
 import { Record } from '@misc-poc/domain';
 import { RecordId, RecordContent, TagId, SearchQuery } from '@misc-poc/shared';
 

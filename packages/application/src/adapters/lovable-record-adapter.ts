@@ -1,4 +1,4 @@
-import { RecordDTO } from '../dtos/record-dto';
+import { RecordDTO } from '../dtos/record-dto.js';
 
 // Type definition matching the Lovable frontend format
 export interface LovableRecord {

@@ -1,10 +1,10 @@
 import {
   DeleteRecordUseCase,
   DeleteRecordRequest,
-} from '../delete-record-use-case';
-import { RecordRepository } from '../../ports/record-repository';
-import { TagRepository } from '../../ports/tag-repository';
-import { UnitOfWork } from '../../ports/unit-of-work';
+} from '../delete-record-use-case.js';
+import { RecordRepository } from '../../ports/record-repository.js';
+import { TagRepository } from '../../ports/tag-repository.js';
+import { UnitOfWork } from '../../ports/unit-of-work.js';
 import { RecordContent, TagId, RecordId, Ok, Err } from '@misc-poc/shared';
 import { Record, Tag, DomainError } from '@misc-poc/domain';
 

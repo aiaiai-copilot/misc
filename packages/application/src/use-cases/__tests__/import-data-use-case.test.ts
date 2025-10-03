@@ -9,16 +9,16 @@ import {
 import {
   RecordRepository,
   RecordSearchResult,
-} from '../../ports/record-repository';
-import { TagRepository } from '../../ports/tag-repository';
-import { UnitOfWork } from '../../ports/unit-of-work';
+} from '../../ports/record-repository.js';
+import { TagRepository } from '../../ports/tag-repository.js';
+import { UnitOfWork } from '../../ports/unit-of-work.js';
 import {
   ImportValidator,
   ImportValidationResult,
-} from '../../services/import-validator';
-import { RecordDTO } from '../../dtos/record-dto';
-import { ExportDTO } from '../../dtos/export-dto';
-import { ImportResultDTO } from '../../dtos/import-result-dto';
+} from '../../services/import-validator.js';
+import { RecordDTO } from '../../dtos/record-dto.js';
+import { ExportDTO } from '../../dtos/export-dto.js';
+import { ImportResultDTO } from '../../dtos/import-result-dto.js';
 
 // Mock implementations
 class MockRecordRepository implements RecordRepository {
@@ -392,7 +392,7 @@ class MockImportValidator extends ImportValidator {
 }
 
 // Import the use case we need to implement
-import { ImportDataUseCase } from '../import-data-use-case';
+import { ImportDataUseCase } from '../import-data-use-case.js';
 
 describe('ImportDataUseCase', () => {
   let useCase: ImportDataUseCase;

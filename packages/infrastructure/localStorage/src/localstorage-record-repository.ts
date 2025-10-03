@@ -13,9 +13,9 @@ import {
   RecordSearchOptions,
   RecordSearchResult,
 } from '@misc-poc/application';
-import { StorageManager } from './storage-manager';
-import { IndexManager } from './index-manager';
-import type { StorageSchemaV21, StorageRecordData } from './storage-schema';
+import { StorageManager } from './storage-manager.js';
+import { IndexManager } from './index-manager.js';
+import type { StorageSchemaV21, StorageRecordData } from './storage-schema.js';
 
 export class LocalStorageRecordRepository implements RecordRepository {
   constructor(

@@ -1,6 +1,6 @@
 import { renderHook, act, waitFor } from '@testing-library/react';
 import { describe, it, expect, vi } from 'vitest';
-import { useLoading } from '../useLoading';
+import { useLoading } from '../useLoading.js';
 
 describe('useLoading Hook', () => {
   it('should initialize with loading false', () => {

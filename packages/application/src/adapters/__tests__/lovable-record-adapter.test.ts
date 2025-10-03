@@ -1,5 +1,5 @@
-import { LovableRecordAdapter, LovableRecord } from '../lovable-record-adapter';
-import { RecordDTO } from '../../dtos/record-dto';
+import { LovableRecordAdapter, LovableRecord } from '../lovable-record-adapter.js';
+import { RecordDTO } from '../../dtos/record-dto.js';
 
 describe('LovableRecordAdapter', () => {
   describe('toLovableRecord', () => {

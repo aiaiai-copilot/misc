@@ -8,7 +8,7 @@ import {
   createConnectionPoolFromUri,
   closeConnectionPool,
   DEFAULT_CONFIG,
-} from '../connection';
+} from '../connection.js';
 
 describe('PostgreSQL Connection Management', () => {
   describe('createConnectionPool', () => {

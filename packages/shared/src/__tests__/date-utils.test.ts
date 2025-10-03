@@ -1,5 +1,5 @@
-import { formatDate, parseDate, isValidDate, getCurrentTimestamp, addDays, subtractDays, daysBetween } from '../date-utils';
-import { Result } from '../result';
+import { formatDate, parseDate, isValidDate, getCurrentTimestamp, addDays, subtractDays, daysBetween } from '../date-utils.js';
+import { Result } from '../result.js';
 
 describe('Date Utilities', () => {
   const testDate = new Date('2023-12-25T10:30:45.123Z');
