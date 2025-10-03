@@ -1,4 +1,4 @@
-import { TagNormalizer, TagNormalizerConfig } from '../tag-normalizer';
+import { TagNormalizer, TagNormalizerConfig } from '../tag-normalizer.js';
 
 describe('TagNormalizer', () => {
   describe('constructor and configuration', () => {

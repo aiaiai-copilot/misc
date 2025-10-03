@@ -85,4 +85,10 @@ export interface RecordRepository {
    * Check if a record exists by ID
    */
   exists(id: RecordId): Promise<Result<boolean, DomainError>>;
+
+  /**
+   * Get tag usage statistics for tag cloud visualization
+   * Returns an array of tags with their occurrence counts
+   */
+  getTagStatistics(): Promise<Result<Array<{ tag: string; count: number }>, DomainError>>;
 }

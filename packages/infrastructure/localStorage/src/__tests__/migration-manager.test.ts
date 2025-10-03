@@ -1,10 +1,10 @@
-import { MigrationManager } from '../migration-manager';
-import { StorageManager } from '../storage-manager';
-import { StorageSchema } from '../storage-schema';
+import { MigrationManager } from '../migration-manager.js';
+import { StorageManager } from '../storage-manager.js';
+import { StorageSchema } from '../storage-schema.js';
 import type {
   StorageSchemaV21,
   LegacyStorageSchemaV20,
-} from '../storage-schema';
+} from '../storage-schema.js';
 
 // Mock StorageManager
 jest.mock('../storage-manager');

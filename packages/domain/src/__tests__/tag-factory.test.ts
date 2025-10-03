@@ -1,7 +1,7 @@
-import { TagFactory } from '../tag-factory';
-import { Tag } from '../tag';
-import { TagNormalizer } from '../tag-normalizer';
-import { TagValidator } from '../tag-validator';
+import { TagFactory } from '../tag-factory.js';
+import { Tag } from '../tag.js';
+import { TagNormalizer } from '../tag-normalizer.js';
+import { TagValidator } from '../tag-validator.js';
 import { TagId } from '@misc-poc/shared';
 
 describe('TagFactory', () => {

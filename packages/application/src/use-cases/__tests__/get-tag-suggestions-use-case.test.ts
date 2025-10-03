@@ -1,11 +1,11 @@
 import { Result, Ok, Err } from '@misc-poc/shared';
 import { DomainError, Tag, TagFactory } from '@misc-poc/domain';
-import { TagRepository, TagSuggestion } from '../../ports/tag-repository';
+import { TagRepository, TagSuggestion } from '../../ports/tag-repository.js';
 import {
   GetTagSuggestionsUseCase,
   GetTagSuggestionsRequest,
   GetTagSuggestionsResponse,
-} from '../get-tag-suggestions-use-case';
+} from '../get-tag-suggestions-use-case.js';
 
 // Mock implementation for TagRepository
 class MockTagRepository implements TagRepository {

@@ -1,4 +1,4 @@
-import { Record } from '../../types/Record';
+import { Record } from '../../types/Record.js';
 
 // Extract the deduplication function for testing
 // This mirrors the implementation from useRecordsIntegrated.ts

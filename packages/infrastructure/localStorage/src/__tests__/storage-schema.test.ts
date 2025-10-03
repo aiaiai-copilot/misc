@@ -1,4 +1,4 @@
-import { StorageSchema } from '../storage-schema';
+import { StorageSchema } from '../storage-schema.js';
 import { TagId, RecordId } from '@misc-poc/shared';
 
 describe('StorageSchema', () => {

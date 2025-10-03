@@ -1,5 +1,5 @@
-import { StorageManager } from '../storage-manager';
-import { StorageSchema, type StorageSchemaV21 } from '../storage-schema';
+import { StorageManager } from '../storage-manager.js';
+import { StorageSchema, type StorageSchemaV21 } from '../storage-schema.js';
 
 // Mock localStorage
 const localStorageMock = ((): Storage & {

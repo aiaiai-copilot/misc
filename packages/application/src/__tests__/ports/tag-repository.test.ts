@@ -5,7 +5,7 @@ import {
   TagSearchOptions,
   TagUsageInfo,
   TagSuggestion,
-} from '../../ports/tag-repository';
+} from '../../ports/tag-repository.js';
 
 /**
  * Mock implementation of TagRepository for testing interface contracts

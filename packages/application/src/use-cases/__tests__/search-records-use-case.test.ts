@@ -11,17 +11,17 @@ import {
   RecordRepository,
   RecordSearchResult,
   RecordSearchOptions,
-} from '../../ports/record-repository';
-import { TagRepository } from '../../ports/tag-repository';
+} from '../../ports/record-repository.js';
+import { TagRepository } from '../../ports/tag-repository.js';
 import {
   SearchRecordsUseCase,
   SearchRecordsRequest,
   SearchRecordsResponse,
-} from '../search-records-use-case';
+} from '../search-records-use-case.js';
 import {
   SearchResultDTO,
   SearchResultDTOMapper,
-} from '../../dtos/search-result-dto';
+} from '../../dtos/search-result-dto.js';
 
 // Mock implementations
 class MockRecordRepository implements RecordRepository {

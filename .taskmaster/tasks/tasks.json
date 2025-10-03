@@ -157,8 +157,65 @@
         "dependencies": [
           3
         ],
-        "status": "pending",
-        "subtasks": []
+        "status": "in-progress",
+        "subtasks": [
+          {
+            "id": 1,
+            "title": "Create Express router for API endpoints",
+            "description": "Set up Express Router instance with base path /api and organize route handlers for records and tags endpoints",
+            "dependencies": [],
+            "details": "Create src/routes/api.ts with Express Router. Set up router structure with /records and /tags route groups. Configure router to be mounted at /api path in main Express app. Add proper TypeScript types for request/response objects.",
+            "status": "done",
+            "testStrategy": "Unit tests for router configuration and route mounting"
+          },
+          {
+            "id": 2,
+            "title": "Implement records CRUD endpoints",
+            "description": "Create GET /api/records, POST /api/records, PUT /api/records/:id, and DELETE /api/records/:id endpoints with proper request/response handling",
+            "dependencies": [
+              "4.1"
+            ],
+            "details": "Implement 4 CRUD endpoints: GET /api/records with query params (q, limit, offset), POST /api/records with content body, PUT /api/records/:id with content body, DELETE /api/records/:id. Use PostgresRecordRepository to interact with database. Handle UUID validation for :id parameter.",
+            "status": "done",
+            "testStrategy": "Integration tests for each endpoint covering success cases, parameter validation, and database interactions"
+          },
+          {
+            "id": 3,
+            "title": "Implement tags endpoint for statistics",
+            "description": "Create GET /api/tags endpoint that returns tag usage statistics for tag cloud visualization",
+            "dependencies": [
+              "4.1"
+            ],
+            "details": "Implement GET /api/tags endpoint that queries database for tag usage statistics. Return array of {tag: string, count: number} objects. Use PostgreSQL queries to aggregate tag counts from normalized_tags array field.",
+            "status": "done",
+            "testStrategy": "Integration tests for tag statistics endpoint covering various tag usage scenarios"
+          },
+          {
+            "id": 4,
+            "title": "Add request validation middleware",
+            "description": "Create validation middleware for request body validation, query parameter validation, and UUID parameter validation",
+            "dependencies": [
+              "4.2",
+              "4.3"
+            ],
+            "details": "Create middleware functions for: 1) UUID validation for :id parameters, 2) Request body validation for POST/PUT endpoints (content field required), 3) Query parameter validation for GET /api/records (q, limit, offset types). Use express middleware pattern with proper error handling.",
+            "status": "pending",
+            "testStrategy": "Unit tests for each validation middleware covering valid inputs, invalid inputs, and edge cases"
+          },
+          {
+            "id": 5,
+            "title": "Implement comprehensive error handling",
+            "description": "Add error handling middleware for proper HTTP status codes (400, 404, 500) and consistent error response format",
+            "dependencies": [
+              "4.2",
+              "4.3",
+              "4.4"
+            ],
+            "details": "Create error handling middleware that maps domain errors to HTTP status codes: DomainError types to 400/404, database errors to 500, validation errors to 400. Ensure consistent JSON error response format: {error: string, message?: string}. Handle Result<T, DomainError> pattern from repository calls.",
+            "status": "pending",
+            "testStrategy": "Integration tests for error scenarios including invalid UUIDs, missing records, database errors, and validation failures"
+          }
+        ]
       },
       {
         "id": 5,
@@ -238,11 +295,22 @@
         ],
         "status": "pending",
         "subtasks": []
+      },
+      {
+        "id": 11,
+        "title": "Fix ES Module Resolution Errors in TypeScript Compilation",
+        "description": "Resolve ES module resolution error preventing backend server startup caused by TypeScript emitting imports without .js extensions while Node.js ESM requires them.",
+        "details": "The monorepo has mixed module configurations causing ES module resolution issues. The domain package uses 'type: module' (ESM) but TypeScript compiles imports without .js extensions, while Node.js ESM requires explicit extensions. The backend package uses CommonJS but imports from ESM packages. Fix by implementing one of two solutions: (1) Configure TypeScript with 'moduleResolution: bundler' and 'allowImportingTsExtensions: false' in all packages that need to emit .js extensions, and ensure consistent module type across packages, or (2) Remove 'type: module' from all package.json files and standardize on CommonJS. Update tsconfig.json files across packages/domain, packages/backend, packages/infrastructure/postgresql to use consistent module resolution. Ensure all cross-package imports work correctly after changes. Test with 'yarn build' and verify backend starts successfully with 'node packages/backend/dist/index.js'.",
+        "testStrategy": "Run 'yarn build' to verify all packages compile without module resolution errors. Test backend startup with 'node packages/backend/dist/index.js' to confirm server starts successfully. Verify all package imports work correctly by running 'yarn typecheck' across all workspaces. Run integration tests to ensure cross-package dependencies function properly. Check that both CommonJS require() and ESM import statements work as expected throughout the codebase.",
+        "status": "done",
+        "dependencies": [],
+        "priority": "high",
+        "subtasks": []
       }
     ],
     "metadata": {
       "created": "2025-10-02T17:53:14.910Z",
-      "updated": "2025-10-03T03:54:07.864Z",
+      "updated": "2025-10-03T09:03:50.609Z",
       "description": "Tasks for master context"
     }
   }

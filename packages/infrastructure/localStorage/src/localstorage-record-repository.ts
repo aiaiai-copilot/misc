@@ -13,9 +13,9 @@ import {
   RecordSearchOptions,
   RecordSearchResult,
 } from '@misc-poc/application';
-import { StorageManager } from './storage-manager';
-import { IndexManager } from './index-manager';
-import type { StorageSchemaV21, StorageRecordData } from './storage-schema';
+import { StorageManager } from './storage-manager.js';
+import { IndexManager } from './index-manager.js';
+import type { StorageSchemaV21, StorageRecordData } from './storage-schema.js';
 
 export class LocalStorageRecordRepository implements RecordRepository {
   constructor(
@@ -279,6 +279,40 @@ export class LocalStorageRecordRepository implements RecordRepository {
       return Ok(exists);
     } catch (error) {
       return this.handleError('Failed to check record existence', error);
+    }
+  }
+
+  async getTagStatistics(): Promise<Result<Array<{ tag: string; count: number }>, DomainError>> {
+    try {
+      const schema = await this.loadAndValidateSchema();
+
+      // Count normalized tag occurrences across all records
+      const tagCounts = new Map<string, number>();
+
+      for (const recordData of Object.values(schema.records)) {
+        // Get tag IDs from record
+        for (const tagId of recordData.tagIds) {
+          const tag = schema.tags[tagId];
+          if (tag) {
+            const normalizedTag = tag.normalizedValue;
+            tagCounts.set(normalizedTag, (tagCounts.get(normalizedTag) || 0) + 1);
+          }
+        }
+      }
+
+      // Convert to array and sort by count (descending) then tag name (ascending)
+      const statistics = Array.from(tagCounts.entries())
+        .map(([tag, count]) => ({ tag, count }))
+        .sort((a, b) => {
+          if (a.count !== b.count) {
+            return b.count - a.count; // Sort by count descending
+          }
+          return a.tag.localeCompare(b.tag); // Then by tag name ascending
+        });
+
+      return Ok(statistics);
+    } catch (error) {
+      return this.handleError('Failed to get tag statistics', error);
     }
   }
 

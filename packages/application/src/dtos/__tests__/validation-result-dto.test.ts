@@ -1,7 +1,7 @@
 import {
   ValidationResultDTO,
   ValidationResultDTOMapper,
-} from '../validation-result-dto';
+} from '../validation-result-dto.js';
 
 describe('ValidationResultDTO', () => {
   describe('TypeScript typing', () => {

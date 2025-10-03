@@ -1,6 +1,6 @@
-import { ImportResultDTO, ImportResultDTOMapper } from '../import-result-dto';
-import { RecordDTO } from '../record-dto';
-import { ValidationResultDTO } from '../validation-result-dto';
+import { ImportResultDTO, ImportResultDTOMapper } from '../import-result-dto.js';
+import { RecordDTO } from '../record-dto.js';
+import { ValidationResultDTO } from '../validation-result-dto.js';
 
 describe('ImportResultDTO', () => {
   const mockSuccessfulRecords: RecordDTO[] = [

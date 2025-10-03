@@ -2,10 +2,10 @@ import {
   CreateRecordUseCase,
   CreateRecordRequest,
   CreateRecordResponse,
-} from '../create-record-use-case';
-import { RecordRepository } from '../../ports/record-repository';
-import { TagRepository } from '../../ports/tag-repository';
-import { UnitOfWork } from '../../ports/unit-of-work';
+} from '../create-record-use-case.js';
+import { RecordRepository } from '../../ports/record-repository.js';
+import { TagRepository } from '../../ports/tag-repository.js';
+import { UnitOfWork } from '../../ports/unit-of-work.js';
 import { Result, RecordContent, TagId, Ok, Err } from '@misc-poc/shared';
 import {
   Record,

@@ -1,5 +1,5 @@
-import { ExportDTO, ExportDTOMapper } from '../export-dto';
-import { RecordDTO } from '../record-dto';
+import { ExportDTO, ExportDTOMapper } from '../export-dto.js';
+import { RecordDTO } from '../record-dto.js';
 
 describe('ExportDTO', () => {
   const mockRecords: RecordDTO[] = [

@@ -1,4 +1,4 @@
-import { Result, Ok, Err } from './result';
+import { Result, Ok, Err } from './result.js';
 
 export type DateInput = Date | number | string;
 export type DateFormat =

@@ -12,7 +12,7 @@
 import { Pool } from 'pg';
 import { PostgreSqlContainer } from '@testcontainers/postgresql';
 import type { StartedPostgreSqlContainer } from '@testcontainers/postgresql';
-import { PostgresRecordRepository } from '../postgres-record-repository';
+import { PostgresRecordRepository } from '../postgres-record-repository.js';
 import { Record } from '@misc-poc/domain';
 import { RecordId, RecordContent, TagId, SearchQuery } from '@misc-poc/shared';
 
@@ -475,6 +475,68 @@ describe('PostgresRecordRepository Integration Tests [perf]', () => {
 
       expect(result.isOk()).toBe(true);
       expect(result.unwrap()).toBe(true);
+    });
+  });
+
+  describe('getTagStatistics', () => {
+    it('should return empty array when no records exist', async () => {
+      const result = await repository.getTagStatistics();
+
+      expect(result.isOk()).toBe(true);
+      expect(result.unwrap()).toEqual([]);
+    });
+
+    it('should return tag statistics with counts', async () => {
+      // Create records with different tags (using valid UUIDs)
+      const tag1 = TagId.generate();
+      const tag2 = TagId.generate();
+      const tag3 = TagId.generate();
+
+      await repository.save(Record.create(new RecordContent('Content 1'), new Set([tag1, tag2])));
+      await repository.save(Record.create(new RecordContent('Content 2'), new Set([tag1, tag3])));
+      await repository.save(Record.create(new RecordContent('Content 3'), new Set([tag1])));
+
+      const result = await repository.getTagStatistics();
+
+      expect(result.isOk()).toBe(true);
+      const stats = result.unwrap();
+
+      // Should have 3 unique tags
+      expect(stats).toHaveLength(3);
+
+      // tag1 appears in 3 records
+      const tag1Stats = stats.find(s => s.tag === tag1.toString());
+      expect(tag1Stats).toEqual({ tag: tag1.toString(), count: 3 });
+
+      // tag2 appears in 1 record
+      const tag2Stats = stats.find(s => s.tag === tag2.toString());
+      expect(tag2Stats).toEqual({ tag: tag2.toString(), count: 1 });
+
+      // tag3 appears in 1 record
+      const tag3Stats = stats.find(s => s.tag === tag3.toString());
+      expect(tag3Stats).toEqual({ tag: tag3.toString(), count: 1 });
+    });
+
+    it('should sort statistics by count descending, then tag name ascending', async () => {
+      // Generate tags and sort them to ensure predictable ordering
+      const allTags = [TagId.generate(), TagId.generate(), TagId.generate()];
+      const [tagA, tagB, tagC] = allTags.sort((a, b) => a.toString().localeCompare(b.toString()));
+
+      // Create records to get different counts: tagA=2, tagB=2, tagC=3
+      await repository.save(Record.create(new RecordContent('Content 1'), new Set([tagC])));
+      await repository.save(Record.create(new RecordContent('Content 2'), new Set([tagA, tagC])));
+      await repository.save(Record.create(new RecordContent('Content 3'), new Set([tagB, tagC])));
+      await repository.save(Record.create(new RecordContent('Content 4'), new Set([tagA, tagB])));
+
+      const result = await repository.getTagStatistics();
+
+      expect(result.isOk()).toBe(true);
+      const stats = result.unwrap();
+
+      // Should be sorted by count DESC (tagC=3 first), then by name ASC (tagA before tagB for count=2)
+      expect(stats[0]).toEqual({ tag: tagC.toString(), count: 3 });
+      expect(stats[1]).toEqual({ tag: tagA.toString(), count: 2 });
+      expect(stats[2]).toEqual({ tag: tagB.toString(), count: 2 });
     });
   });
 });

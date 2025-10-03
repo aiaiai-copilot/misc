@@ -5,11 +5,11 @@ import {
   RecordRepository,
   TagRepository,
 } from '@misc-poc/application';
-import { StorageManager } from './storage-manager';
-import { IndexManager } from './index-manager';
-import { LocalStorageRecordRepository } from './localstorage-record-repository';
-import { LocalStorageTagRepository } from './localstorage-tag-repository';
-import type { StorageSchemaV21 } from './storage-schema';
+import { StorageManager } from './storage-manager.js';
+import { IndexManager } from './index-manager.js';
+import { LocalStorageRecordRepository } from './localstorage-record-repository.js';
+import { LocalStorageTagRepository } from './localstorage-tag-repository.js';
+import type { StorageSchemaV21 } from './storage-schema.js';
 
 interface StorageManagerLike {
   load(): Promise<StorageSchemaV21>;

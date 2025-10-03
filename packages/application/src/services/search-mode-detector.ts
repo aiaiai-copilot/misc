@@ -1,4 +1,4 @@
-import { SearchResultDTO } from '../dtos/search-result-dto';
+import { SearchResultDTO } from '../dtos/search-result-dto.js';
 
 export enum DisplayMode {
   LIST = 'list',

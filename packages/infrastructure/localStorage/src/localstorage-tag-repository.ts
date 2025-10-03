@@ -6,9 +6,9 @@ import {
   TagUsageInfo,
   TagSuggestion,
 } from '@misc-poc/application';
-import { StorageManager } from './storage-manager';
-import { IndexManager } from './index-manager';
-import type { StorageSchemaV21, StorageTagData } from './storage-schema';
+import { StorageManager } from './storage-manager.js';
+import { IndexManager } from './index-manager.js';
+import type { StorageSchemaV21, StorageTagData } from './storage-schema.js';
 
 export class LocalStorageTagRepository implements TagRepository {
   constructor(

@@ -1,6 +1,7 @@
 import express, { Request, Response, NextFunction } from 'express';
 import cors from 'cors';
 import dotenv from 'dotenv';
+import apiRouter from './routes/api.js';
 
 dotenv.config();
 
@@ -19,6 +20,9 @@ app.use(express.urlencoded({ extended: true }));
 app.get('/health', (_req: Request, res: Response) => {
   res.json({ status: 'ok', timestamp: new Date().toISOString() });
 });
+
+// API routes
+app.use('/api', apiRouter);
 
 // Basic error handling middleware
 app.use((err: Error, _req: Request, res: Response, _next: NextFunction) => {

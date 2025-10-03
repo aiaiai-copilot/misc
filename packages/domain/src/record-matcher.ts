@@ -1,5 +1,5 @@
-import { Record } from './record';
-import { Tag } from './tag';
+import { Record } from './record.js';
+import { Tag } from './tag.js';
 import { TagId, SearchQuery } from '@misc-poc/shared';
 
 export class RecordMatcher {

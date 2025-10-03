@@ -1,8 +1,8 @@
-import { RecordDTO, RecordDTOMapper } from './record-dto';
+import { RecordDTO, RecordDTOMapper } from './record-dto.js';
 import {
   RecordSearchResult,
   RecordSearchOptions,
-} from '../ports/record-repository';
+} from '../ports/record-repository.js';
 import { TagId } from '@misc-poc/shared';
 
 export interface SearchResultDTO {
