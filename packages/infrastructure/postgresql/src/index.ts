@@ -12,3 +12,8 @@ export {
   DEFAULT_CONFIG,
   type PostgresConfig,
 } from './connection.js';
+export {
+  toDatabaseRow,
+  fromDatabaseRow,
+  type RecordRow,
+} from './mappers.js';
