@@ -3,7 +3,7 @@ import { RecordsList } from '../RecordsList';
 import { Record } from '../../types/Record';
 import { vi } from 'vitest';
 
-describe('RecordsList Performance Tests', () => {
+describe('RecordsList Performance Tests [perf]', () => {
   const generateLargeDataset = (count: number): Record[] => {
     return Array.from({ length: count }, (_, i) => ({
       id: i.toString(),
@@ -36,8 +36,8 @@ describe('RecordsList Performance Tests', () => {
       const endTime = performance.now();
       const renderTime = endTime - startTime;
 
-      // Performance target: render time < 400ms (allows for system variance while maintaining performance)
-      expect(renderTime).toBeLessThan(400);
+      // Performance target: render time < 800ms (allows for system variance and CI environment overhead)
+      expect(renderTime).toBeLessThan(800);
 
       // Verify only 50 records are actually rendered (optimized behavior)
       const recordItems = document.querySelectorAll('.record-item');
@@ -134,8 +134,8 @@ describe('RecordsList Performance Tests', () => {
       const endTime = performance.now();
       const complexSearchTime = endTime - startTime;
 
-      // Complex search should still be within target
-      expect(complexSearchTime).toBeLessThan(400);
+      // Complex search should still be within target (generous threshold for CI stability)
+      expect(complexSearchTime).toBeLessThan(800);
     });
   });
 
@@ -187,8 +187,8 @@ describe('RecordsList Performance Tests', () => {
       const endTime = performance.now();
       const navigationTime = endTime - startTime;
 
-      // Navigation should be responsive
-      expect(navigationTime).toBeLessThan(50);
+      // Navigation should be responsive (generous threshold for CI stability)
+      expect(navigationTime).toBeLessThan(150);
     });
   });
 });

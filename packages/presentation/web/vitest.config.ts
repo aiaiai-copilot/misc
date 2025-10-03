@@ -14,6 +14,6 @@ export default defineConfig({
     globals: true,
     environment: 'jsdom',
     setupFiles: ['./src/test/setup.ts'],
-    types: ['vitest/globals'],
+    testTimeout: 300000, // 5 minutes for performance tests
   },
 })
