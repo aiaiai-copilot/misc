@@ -157,7 +157,7 @@
         "dependencies": [
           3
         ],
-        "status": "in-progress",
+        "status": "done",
         "subtasks": [
           {
             "id": 1,
@@ -212,7 +212,7 @@
               "4.4"
             ],
             "details": "Create error handling middleware that maps domain errors to HTTP status codes: DomainError types to 400/404, database errors to 500, validation errors to 400. Ensure consistent JSON error response format: {error: string, message?: string}. Handle Result<T, DomainError> pattern from repository calls.",
-            "status": "pending",
+            "status": "done",
             "testStrategy": "Integration tests for error scenarios including invalid UUIDs, missing records, database errors, and validation failures"
           }
         ]
@@ -310,7 +310,7 @@
     ],
     "metadata": {
       "created": "2025-10-02T17:53:14.910Z",
-      "updated": "2025-10-03T15:06:32.704Z",
+      "updated": "2025-10-03T15:22:38.347Z",
       "description": "Tasks for master context"
     }
   }
