@@ -157,7 +157,7 @@
         "dependencies": [
           3
         ],
-        "status": "in-progress",
+        "status": "done",
         "subtasks": [
           {
             "id": 1,
@@ -199,7 +199,7 @@
               "4.3"
             ],
             "details": "Create middleware functions for: 1) UUID validation for :id parameters, 2) Request body validation for POST/PUT endpoints (content field required), 3) Query parameter validation for GET /api/records (q, limit, offset types). Use express middleware pattern with proper error handling.",
-            "status": "pending",
+            "status": "done",
             "testStrategy": "Unit tests for each validation middleware covering valid inputs, invalid inputs, and edge cases"
           },
           {
@@ -212,7 +212,7 @@
               "4.4"
             ],
             "details": "Create error handling middleware that maps domain errors to HTTP status codes: DomainError types to 400/404, database errors to 500, validation errors to 400. Ensure consistent JSON error response format: {error: string, message?: string}. Handle Result<T, DomainError> pattern from repository calls.",
-            "status": "pending",
+            "status": "done",
             "testStrategy": "Integration tests for error scenarios including invalid UUIDs, missing records, database errors, and validation failures"
           }
         ]
@@ -302,7 +302,7 @@
         "description": "Resolve ES module resolution error preventing backend server startup caused by TypeScript emitting imports without .js extensions while Node.js ESM requires them.",
         "details": "The monorepo has mixed module configurations causing ES module resolution issues. The domain package uses 'type: module' (ESM) but TypeScript compiles imports without .js extensions, while Node.js ESM requires explicit extensions. The backend package uses CommonJS but imports from ESM packages. Fix by implementing one of two solutions: (1) Configure TypeScript with 'moduleResolution: bundler' and 'allowImportingTsExtensions: false' in all packages that need to emit .js extensions, and ensure consistent module type across packages, or (2) Remove 'type: module' from all package.json files and standardize on CommonJS. Update tsconfig.json files across packages/domain, packages/backend, packages/infrastructure/postgresql to use consistent module resolution. Ensure all cross-package imports work correctly after changes. Test with 'yarn build' and verify backend starts successfully with 'node packages/backend/dist/index.js'.",
         "testStrategy": "Run 'yarn build' to verify all packages compile without module resolution errors. Test backend startup with 'node packages/backend/dist/index.js' to confirm server starts successfully. Verify all package imports work correctly by running 'yarn typecheck' across all workspaces. Run integration tests to ensure cross-package dependencies function properly. Check that both CommonJS require() and ESM import statements work as expected throughout the codebase.",
-        "status": "done",
+        "status": "pending",
         "dependencies": [],
         "priority": "high",
         "subtasks": []
@@ -310,7 +310,7 @@
     ],
     "metadata": {
       "created": "2025-10-02T17:53:14.910Z",
-      "updated": "2025-10-03T09:03:50.609Z",
+      "updated": "2025-10-03T15:22:38.347Z",
       "description": "Tasks for master context"
     }
   }
