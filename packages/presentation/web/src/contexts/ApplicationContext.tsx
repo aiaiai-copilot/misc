@@ -22,12 +22,11 @@ import {
 } from '@misc-poc/application';
 import { TagFactory } from '@misc-poc/domain';
 import {
-  LocalStorageRecordRepository,
-  LocalStorageTagRepository,
-  LocalStorageUnitOfWork,
-  StorageManager,
-  IndexManager,
-} from '@misc-poc/infrastructure-localstorage';
+  ApiRecordRepository,
+  ApiTagRepository,
+  ApiUnitOfWork,
+} from '@misc-poc/infrastructure-api';
+import { RecordApiClient } from '../services/RecordApiClient.js';
 
 export interface ApplicationContextValue {
   createRecordUseCase: CreateRecordUseCase | null;
@@ -67,32 +66,34 @@ export const ApplicationContextProvider: React.FC<
       try {
         const container = new ApplicationContainer();
 
-        // Register dependencies
-        const storageManager = new StorageManager('misc-poc-storage');
-        const indexManager = new IndexManager();
+        // Get API base URL from environment or use default
+        const apiBaseUrl = import.meta.env.VITE_API_BASE_URL || 'http://localhost:3000';
 
-        console.log('StorageManager created:', !!storageManager);
-        console.log('IndexManager created:', !!indexManager);
+        // Create API client
+        const apiClient = new RecordApiClient({
+          baseUrl: apiBaseUrl,
+        });
+
+        console.log('API client created with base URL:', apiBaseUrl);
+
+        // Create repositories
+        const recordRepository = new ApiRecordRepository(apiClient);
+        const tagRepository = new ApiTagRepository(apiClient);
+        const unitOfWork = new ApiUnitOfWork(recordRepository, tagRepository);
 
         // Register repositories
         container.register(
           'recordRepository',
           new DependencyDescriptor(() => {
-            console.log('Creating LocalStorageRecordRepository with:', {
-              storageManager: !!storageManager,
-              indexManager: !!indexManager,
-            });
-            return new LocalStorageRecordRepository(
-              storageManager,
-              indexManager
-            );
+            console.log('Using ApiRecordRepository');
+            return recordRepository;
           }, ServiceLifetime.SINGLETON)
         );
 
         container.register(
           'tagRepository',
           new DependencyDescriptor(
-            () => new LocalStorageTagRepository(storageManager, indexManager),
+            () => tagRepository,
             ServiceLifetime.SINGLETON
           )
         );
@@ -100,7 +101,7 @@ export const ApplicationContextProvider: React.FC<
         container.register(
           'unitOfWork',
           new DependencyDescriptor(
-            () => new LocalStorageUnitOfWork(storageManager, indexManager),
+            () => unitOfWork,
             ServiceLifetime.SINGLETON
           )
         );
@@ -128,9 +129,9 @@ export const ApplicationContextProvider: React.FC<
           new DependencyDescriptor(
             (deps: Record<string, unknown>) =>
               new CreateRecordUseCase(
-                deps.recordRepository as LocalStorageRecordRepository,
-                deps.tagRepository as LocalStorageTagRepository,
-                deps.unitOfWork as LocalStorageUnitOfWork
+                deps.recordRepository as ApiRecordRepository,
+                deps.tagRepository as ApiTagRepository,
+                deps.unitOfWork as ApiUnitOfWork
               ),
             ServiceLifetime.SINGLETON,
             ['recordRepository', 'tagRepository', 'unitOfWork']
@@ -142,7 +143,7 @@ export const ApplicationContextProvider: React.FC<
           new DependencyDescriptor(
             (deps: Record<string, unknown>) =>
               new SearchRecordsUseCase(
-                deps.recordRepository as LocalStorageRecordRepository
+                deps.recordRepository as ApiRecordRepository
               ),
             ServiceLifetime.SINGLETON,
             ['recordRepository']
@@ -154,9 +155,9 @@ export const ApplicationContextProvider: React.FC<
           new DependencyDescriptor(
             (deps: Record<string, unknown>) =>
               new UpdateRecordUseCase(
-                deps.recordRepository as LocalStorageRecordRepository,
-                deps.tagRepository as LocalStorageTagRepository,
-                deps.unitOfWork as LocalStorageUnitOfWork
+                deps.recordRepository as ApiRecordRepository,
+                deps.tagRepository as ApiTagRepository,
+                deps.unitOfWork as ApiUnitOfWork
               ),
             ServiceLifetime.SINGLETON,
             ['recordRepository', 'tagRepository', 'unitOfWork']
@@ -168,8 +169,8 @@ export const ApplicationContextProvider: React.FC<
           new DependencyDescriptor(
             (deps: Record<string, unknown>) =>
               new DeleteRecordUseCase(
-                deps.recordRepository as LocalStorageRecordRepository,
-                deps.unitOfWork as LocalStorageUnitOfWork
+                deps.recordRepository as ApiRecordRepository,
+                deps.unitOfWork as ApiUnitOfWork
               ),
             ServiceLifetime.SINGLETON,
             ['recordRepository', 'unitOfWork']
@@ -181,7 +182,7 @@ export const ApplicationContextProvider: React.FC<
           new DependencyDescriptor(
             (deps: Record<string, unknown>) =>
               new GetTagSuggestionsUseCase(
-                deps.tagRepository as LocalStorageTagRepository
+                deps.tagRepository as ApiTagRepository
               ),
             ServiceLifetime.SINGLETON,
             ['tagRepository']
@@ -193,8 +194,8 @@ export const ApplicationContextProvider: React.FC<
           new DependencyDescriptor(
             (deps: Record<string, unknown>) =>
               new ExportDataUseCase(
-                deps.recordRepository as LocalStorageRecordRepository,
-                deps.tagRepository as LocalStorageTagRepository
+                deps.recordRepository as ApiRecordRepository,
+                deps.tagRepository as ApiTagRepository
               ),
             ServiceLifetime.SINGLETON,
             ['recordRepository', 'tagRepository']
@@ -206,7 +207,7 @@ export const ApplicationContextProvider: React.FC<
           new DependencyDescriptor(
             (deps: Record<string, unknown>) =>
               new ImportDataUseCase(
-                deps.unitOfWork as LocalStorageUnitOfWork,
+                deps.unitOfWork as ApiUnitOfWork,
                 deps.importValidator as ImportValidator,
                 deps.tagFactory as TagFactory
               ),
@@ -229,7 +230,7 @@ export const ApplicationContextProvider: React.FC<
           new DependencyDescriptor(
             (deps: Record<string, unknown>) =>
               new TagCloudBuilder(
-                deps.tagRepository as LocalStorageTagRepository
+                deps.tagRepository as ApiTagRepository
               ),
             ServiceLifetime.SINGLETON,
             ['tagRepository']

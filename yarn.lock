@@ -1410,7 +1410,7 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"@misc-poc/infrastructure-api@workspace:packages/infrastructure/api":
+"@misc-poc/infrastructure-api@workspace:*, @misc-poc/infrastructure-api@workspace:packages/infrastructure/api":
   version: 0.0.0-use.local
   resolution: "@misc-poc/infrastructure-api@workspace:packages/infrastructure/api"
   dependencies:
@@ -1477,6 +1477,7 @@ __metadata:
   dependencies:
     "@misc-poc/application": "workspace:*"
     "@misc-poc/domain": "workspace:*"
+    "@misc-poc/infrastructure-api": "workspace:*"
     "@misc-poc/infrastructure-localstorage": "workspace:*"
     "@misc-poc/shared": "workspace:*"
     "@radix-ui/react-dropdown-menu": ^2.1.16

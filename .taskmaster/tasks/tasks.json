@@ -269,7 +269,7 @@
             "title": "Update ApplicationContext to use API-based repositories",
             "description": "Replace LocalStorage repositories with new API repositories in ApplicationContext. Update dependency injection container. Add API_BASE_URL configuration (default to http://localhost:3000). Keep same use case structure.",
             "details": "",
-            "status": "pending",
+            "status": "done",
             "dependencies": [],
             "parentTaskId": 7
           },
@@ -356,7 +356,7 @@
     ],
     "metadata": {
       "created": "2025-10-02T17:53:14.910Z",
-      "updated": "2025-10-03T18:49:38.472Z",
+      "updated": "2025-10-04T03:58:58.950Z",
       "description": "Tasks for master context"
     }
   }
