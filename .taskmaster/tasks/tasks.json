@@ -287,7 +287,7 @@
             "title": "Update tests for API integration",
             "description": "Update existing tests to work with API repositories instead of localStorage. Add integration tests for API client error handling. Mock API responses in component tests. Ensure all existing functionality tests still pass.",
             "details": "",
-            "status": "in-progress",
+            "status": "done",
             "dependencies": [],
             "parentTaskId": 7
           },
@@ -356,7 +356,7 @@
     ],
     "metadata": {
       "created": "2025-10-02T17:53:14.910Z",
-      "updated": "2025-10-08T21:34:17.006Z",
+      "updated": "2025-10-08T21:49:19.137Z",
       "description": "Tasks for master context"
     }
   }
