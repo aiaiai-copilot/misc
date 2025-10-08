@@ -1,4 +1,5 @@
 import { Page, Locator, expect } from '@playwright/test';
+import { clearAllRecords } from '../api-helpers.js';
 
 export class MiscPage {
   readonly page: Page;
@@ -56,6 +57,10 @@ export class MiscPage {
   }
 
   async clearLocalStorage(): Promise<void> {
+    // Clear data via API instead of localStorage
+    await clearAllRecords();
+
+    // Also clear browser storage for any cached data
     await this.page.evaluate(() => {
       localStorage.clear();
       sessionStorage.clear();
@@ -99,7 +104,7 @@ export class MiscPage {
   async getVisibleRecords(): Promise<string[]> {
     const records = this.recordsList.locator('[data-testid="record-item"]');
     const count = await records.count();
-    const recordTexts = [];
+    const recordTexts: string[] = [];
 
     for (let i = 0; i < count; i++) {
       const text = await records.nth(i).textContent();
@@ -169,7 +174,7 @@ export class MiscPage {
   async getTagCloudTags(): Promise<string[]> {
     const tags = this.tagCloud.locator('[data-testid="tag-item"]');
     const count = await tags.count();
-    const tagTexts = [];
+    const tagTexts: string[] = [];
 
     for (let i = 0; i < count; i++) {
       const text = await tags.nth(i).textContent();

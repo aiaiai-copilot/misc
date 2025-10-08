@@ -8,6 +8,9 @@ const testDir = './e2e';
  */
 export default defineConfig({
   testDir,
+  /* Global setup and teardown */
+  globalSetup: './e2e/support/global-setup.ts',
+  globalTeardown: './e2e/support/global-teardown.ts',
   /* Run tests in files in parallel */
   fullyParallel: true,
   /* Fail the build on CI if you accidentally left test.only in the source code. */
@@ -71,13 +74,26 @@ export default defineConfig({
   ],
 
   /* Run your local dev server before starting the tests */
-  webServer: {
-    command:
-      'yarn build:packages && yarn workspace @misc-poc/presentation-web build && yarn workspace @misc-poc/presentation-web preview',
-    port: 4173,
-    reuseExistingServer: !process.env.CI,
-    timeout: 120 * 1000, // 2 minutes timeout for build process
-    stdout: 'pipe', // Show build output for debugging
-    stderr: 'pipe',
-  },
+  webServer: [
+    {
+      command: 'bash -c "cd packages/backend && yarn build && yarn start"',
+      port: 3001,
+      reuseExistingServer: !process.env.CI,
+      timeout: 60 * 1000, // 1 minute timeout for backend startup
+      stdout: 'pipe',
+      stderr: 'pipe',
+    },
+    {
+      command:
+        'yarn build:packages && yarn workspace @misc-poc/presentation-web build && yarn workspace @misc-poc/presentation-web preview',
+      port: 4173,
+      reuseExistingServer: !process.env.CI,
+      timeout: 120 * 1000, // 2 minutes timeout for build process
+      stdout: 'pipe', // Show build output for debugging
+      stderr: 'pipe',
+      env: {
+        VITE_API_BASE_URL: 'http://localhost:3001',
+      },
+    },
+  ],
 });
