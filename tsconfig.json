@@ -26,9 +26,14 @@
       "@misc-poc/shared": ["./packages/shared/src"],
       "@misc-poc/domain": ["./packages/domain/src"],
       "@misc-poc/application": ["./packages/application/src"],
+      "@misc-poc/infrastructure-api": ["./packages/infrastructure/api/src"],
       "@misc-poc/infrastructure-localstorage": [
         "./packages/infrastructure/localStorage/src"
       ],
+      "@misc-poc/infrastructure-postgresql": [
+        "./packages/infrastructure/postgresql/src"
+      ],
+      "@misc-poc/backend": ["./packages/backend/src"],
       "@misc-poc/presentation-web": ["./packages/presentation/web/src"],
       "@misc-poc/presentation-cli": ["./packages/presentation/cli/src"]
     }
@@ -38,7 +43,10 @@
     { "path": "./packages/shared" },
     { "path": "./packages/domain" },
     { "path": "./packages/application" },
+    { "path": "./packages/infrastructure/api" },
     { "path": "./packages/infrastructure/localStorage" },
+    { "path": "./packages/infrastructure/postgresql" },
+    { "path": "./packages/backend" },
     { "path": "./packages/presentation/web" },
     { "path": "./packages/presentation/cli" }
   ]
