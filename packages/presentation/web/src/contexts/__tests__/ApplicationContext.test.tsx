@@ -45,7 +45,7 @@ describe('ApplicationContext', () => {
       expect(screen.getByTestId('search-use-case')).toHaveTextContent('SearchRecordsUseCase available')
     })
 
-    it('should initialize context with LocalStorage repositories', () => {
+    it('should initialize context with API repositories', () => {
       render(
         <ApplicationContextProvider>
           <TestConsumer />
