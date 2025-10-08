@@ -253,8 +253,54 @@
         "dependencies": [
           6
         ],
-        "status": "pending",
-        "subtasks": []
+        "status": "done",
+        "subtasks": [
+          {
+            "id": 1,
+            "title": "Create infrastructure-api package with HTTP repositories",
+            "description": "Create new package @misc-poc/infrastructure-api with ApiRecordRepository and ApiTagRepository that use RecordApiClient. Implement IRecordRepository and ITagRepository interfaces from domain layer. These repositories will translate between API DTOs and domain entities.",
+            "details": "",
+            "status": "done",
+            "dependencies": [],
+            "parentTaskId": 7
+          },
+          {
+            "id": 2,
+            "title": "Update ApplicationContext to use API-based repositories",
+            "description": "Replace LocalStorage repositories with new API repositories in ApplicationContext. Update dependency injection container. Add API_BASE_URL configuration (default to http://localhost:3000). Keep same use case structure.",
+            "details": "",
+            "status": "done",
+            "dependencies": [],
+            "parentTaskId": 7
+          },
+          {
+            "id": 3,
+            "title": "Add loading and error states to components",
+            "description": "Update components to handle async API operations: add isLoading state during API calls, show loading spinners/overlays, implement error notifications using Sonner toast, handle network failures gracefully. Update MiscInputIntegrated and search components.",
+            "details": "",
+            "status": "done",
+            "dependencies": [],
+            "parentTaskId": 7
+          },
+          {
+            "id": 4,
+            "title": "Update tests for API integration",
+            "description": "Update existing tests to work with API repositories instead of localStorage. Add integration tests for API client error handling. Mock API responses in component tests. Ensure all existing functionality tests still pass.",
+            "details": "",
+            "status": "done",
+            "dependencies": [],
+            "parentTaskId": 7
+          },
+          {
+            "id": 5,
+            "title": "Remove localStorage dependencies and verify functionality",
+            "description": "Remove @misc-poc/infrastructure-localstorage dependency from presentation-web. Update package.json. Run full test suite. Verify all features work: search, create, update, delete, tag cloud. Test with backend running.",
+            "details": "",
+            "status": "done",
+            "dependencies": [],
+            "parentTaskId": 7
+          }
+        ]
       },
       {
         "id": 8,
@@ -310,7 +356,7 @@
     ],
     "metadata": {
       "created": "2025-10-02T17:53:14.910Z",
-      "updated": "2025-10-03T18:10:45.256Z",
+      "updated": "2025-10-08T21:55:28.743Z",
       "description": "Tasks for master context"
     }
   }
