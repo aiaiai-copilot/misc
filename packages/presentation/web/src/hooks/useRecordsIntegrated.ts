@@ -1,6 +1,7 @@
 import { useState, useEffect, useMemo, useCallback } from 'react';
 import { useApplicationContext } from '../contexts/ApplicationContext.js';
 import { Record } from '../types/Record.js';
+import { toast } from 'sonner';
 
 interface UseRecordsIntegratedReturn {
   records: Record[];
@@ -70,9 +71,13 @@ export const useRecordsIntegrated = (): UseRecordsIntegratedReturn => {
         }));
         const deduplicatedRecords = deduplicateRecordsByTagSet(mappedRecords);
         setRecords(deduplicatedRecords);
+      } else {
+        const error = result.unwrapErr();
+        toast.error(`Failed to load records: ${error.message}`);
       }
     } catch (error) {
       console.error('Failed to load records:', error);
+      toast.error('An unexpected error occurred while loading records');
     } finally {
       setIsLoading(false);
     }
@@ -162,12 +167,19 @@ export const useRecordsIntegrated = (): UseRecordsIntegratedReturn => {
       } else {
         const error = result.unwrapErr();
         if (error.code === 'DUPLICATE_RECORD') {
+          toast.error('Record with these tags already exists');
           return false; // Duplicate
         }
+        toast.error(`Failed to create record: ${error.message}`);
         throw new Error(error.message);
       }
     } catch (error) {
       console.error('Failed to create record:', error);
+      if (error instanceof Error && error.message) {
+        // Error already shown via toast in the else block
+      } else {
+        toast.error('An unexpected error occurred while creating record');
+      }
       return false; // Don't re-throw, just return false
     }
   }, [createRecordUseCase]);
@@ -196,10 +208,12 @@ export const useRecordsIntegrated = (): UseRecordsIntegratedReturn => {
         return true;
       } else {
         const error = result.unwrapErr();
+        toast.error(`Failed to update record: ${error.message}`);
         throw new Error(error.message);
       }
     } catch (error) {
       console.error('Failed to update record:', error);
+      toast.error('An unexpected error occurred while updating record');
       throw error;
     }
   }, [updateRecordUseCase]);
@@ -224,13 +238,20 @@ export const useRecordsIntegrated = (): UseRecordsIntegratedReturn => {
         if (error.code === 'RECORD_NOT_FOUND') {
           console.log('Record not found in storage, removing from UI state');
           setRecords(prev => prev.filter(record => record.id !== id));
+          toast.info('Record was already deleted');
           return true; // Treat as success since the record is gone
         }
-        
+
+        toast.error(`Failed to delete record: ${error.message}`);
         throw new Error(error.message);
       }
     } catch (error) {
       console.error('Failed to delete record:', error);
+      if (error instanceof Error && error.message) {
+        // Error already shown via toast in the else block
+      } else {
+        toast.error('An unexpected error occurred while deleting record');
+      }
       return false; // Return false instead of throwing to prevent UI crashes
     }
   }, [deleteRecordUseCase, records]);
@@ -260,9 +281,13 @@ export const useRecordsIntegrated = (): UseRecordsIntegratedReturn => {
         }));
         const deduplicatedRecords = deduplicateRecordsByTagSet(mappedRecords);
         setRecords(deduplicatedRecords);
+      } else {
+        const error = result.unwrapErr();
+        toast.error(`Search failed: ${error.message}`);
       }
     } catch (error) {
       console.error('Search failed:', error);
+      toast.error('An unexpected error occurred during search');
     } finally {
       setIsLoading(false);
     }

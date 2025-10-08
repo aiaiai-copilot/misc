@@ -4,6 +4,7 @@ import { useRecordsIntegrated } from '../useRecordsIntegrated.js'
 import { useApplicationContext } from '../../contexts/ApplicationContext.js'
 import { Ok, Err } from '@misc-poc/shared'
 import { DomainError } from '@misc-poc/domain'
+import { toast } from 'sonner'
 
 // Mock dependencies
 vi.mock('../../contexts/ApplicationContext')
@@ -11,6 +12,7 @@ vi.mock('sonner', () => ({
   toast: {
     success: vi.fn(),
     error: vi.fn(),
+    info: vi.fn(),
   }
 }))
 
@@ -86,6 +88,17 @@ describe('useRecordsIntegrated', () => {
         expect(result.current.isLoading).toBe(false)
       })
     })
+
+    it('should show error toast when initial load fails', async () => {
+      const error = new DomainError('SEARCH_ERROR', 'Database connection failed')
+      mockSearchRecordsUseCase.execute.mockResolvedValue(Err(error))
+
+      renderHook(() => useRecordsIntegrated())
+
+      await waitFor(() => {
+        expect(toast.error).toHaveBeenCalledWith('Failed to load records: Database connection failed')
+      })
+    })
   })
 
   describe('createRecord', () => {
@@ -132,7 +145,7 @@ describe('useRecordsIntegrated', () => {
     it('should handle duplicate record creation', async () => {
       const error = new DomainError('DUPLICATE_RECORD', 'Record already exists')
       mockCreateRecordUseCase.execute.mockResolvedValue(Err(error))
-      
+
       // Mock empty search result for initialization
       mockSearchRecordsUseCase.execute.mockResolvedValue(
         Ok({ searchResult: { records: [], total: 0, hasMore: false } })
@@ -151,6 +164,48 @@ describe('useRecordsIntegrated', () => {
 
       expect(success!).toBe(false)
     })
+
+    it('should show error toast for duplicate record', async () => {
+      const error = new DomainError('DUPLICATE_RECORD', 'Record already exists')
+      mockCreateRecordUseCase.execute.mockResolvedValue(Err(error))
+
+      mockSearchRecordsUseCase.execute.mockResolvedValue(
+        Ok({ searchResult: { records: [], total: 0, hasMore: false } })
+      )
+
+      const { result } = renderHook(() => useRecordsIntegrated())
+
+      await waitFor(() => expect(result.current.isLoading).toBe(false))
+
+      await act(async () => {
+        await result.current.createRecord(['duplicate', 'tag'])
+      })
+
+      await waitFor(() => {
+        expect(toast.error).toHaveBeenCalledWith('Record with these tags already exists')
+      })
+    })
+
+    it('should show error toast for create failures', async () => {
+      const error = new DomainError('CREATE_ERROR', 'Database write failed')
+      mockCreateRecordUseCase.execute.mockResolvedValue(Err(error))
+
+      mockSearchRecordsUseCase.execute.mockResolvedValue(
+        Ok({ searchResult: { records: [], total: 0, hasMore: false } })
+      )
+
+      const { result } = renderHook(() => useRecordsIntegrated())
+
+      await waitFor(() => expect(result.current.isLoading).toBe(false))
+
+      await act(async () => {
+        await result.current.createRecord(['new', 'tag'])
+      })
+
+      await waitFor(() => {
+        expect(toast.error).toHaveBeenCalledWith('Failed to create record: Database write failed')
+      })
+    })
   })
 
   describe('updateRecord', () => {
@@ -166,7 +221,7 @@ describe('useRecordsIntegrated', () => {
       }
 
       mockUpdateRecordUseCase.execute.mockResolvedValue(Ok(mockUpdateResponse))
-      
+
       // Mock search result with existing record for initialization
       const mockSearchResult = {
         records: [
@@ -206,6 +261,44 @@ describe('useRecordsIntegrated', () => {
         expect(result.current.records[0].tags).toEqual(['updated', 'tags'])
       })
     })
+
+    it('should show error toast when update fails', async () => {
+      const error = new DomainError('UPDATE_ERROR', 'Record not found')
+      mockUpdateRecordUseCase.execute.mockResolvedValue(Err(error))
+
+      const mockSearchResult = {
+        records: [
+          {
+            id: 'record-1',
+            content: 'old tags',
+            tagIds: new Set(['old', 'tags']),
+            createdAt: new Date('2023-01-01'),
+            updatedAt: new Date('2023-01-01'),
+          }
+        ],
+        total: 1,
+        hasMore: false,
+      }
+      mockSearchRecordsUseCase.execute.mockResolvedValue(
+        Ok({ searchResult: mockSearchResult })
+      )
+
+      const { result } = renderHook(() => useRecordsIntegrated())
+
+      await waitFor(() => expect(result.current.records).toHaveLength(1))
+
+      await act(async () => {
+        try {
+          await result.current.updateRecord('record-1', ['updated', 'tags'])
+        } catch {
+          // Expected to throw
+        }
+      })
+
+      await waitFor(() => {
+        expect(toast.error).toHaveBeenCalledWith('Failed to update record: Record not found')
+      })
+    })
   })
 
   describe('deleteRecord', () => {
@@ -216,7 +309,7 @@ describe('useRecordsIntegrated', () => {
       }
 
       mockDeleteRecordUseCase.execute.mockResolvedValue(Ok(mockDeleteResponse))
-      
+
       // Mock search result with existing record for initialization
       const mockSearchResult = {
         records: [
@@ -253,6 +346,74 @@ describe('useRecordsIntegrated', () => {
 
       await waitFor(() => {
         expect(result.current.records).toHaveLength(0)
+      })
+    })
+
+    it('should show info toast when record already deleted', async () => {
+      const error = new DomainError('RECORD_NOT_FOUND', 'Record not found')
+      mockDeleteRecordUseCase.execute.mockResolvedValue(Err(error))
+
+      const mockSearchResult = {
+        records: [
+          {
+            id: 'record-1',
+            content: 'tag1 tag2',
+            tagIds: new Set(['tag1', 'tag2']),
+            createdAt: new Date('2023-01-01'),
+            updatedAt: new Date('2023-01-01'),
+          }
+        ],
+        total: 1,
+        hasMore: false,
+      }
+      mockSearchRecordsUseCase.execute.mockResolvedValue(
+        Ok({ searchResult: mockSearchResult })
+      )
+
+      const { result } = renderHook(() => useRecordsIntegrated())
+
+      await waitFor(() => expect(result.current.records).toHaveLength(1))
+
+      await act(async () => {
+        await result.current.deleteRecord('record-1')
+      })
+
+      await waitFor(() => {
+        expect(toast.info).toHaveBeenCalledWith('Record was already deleted')
+      })
+    })
+
+    it('should show error toast when delete fails', async () => {
+      const error = new DomainError('DELETE_ERROR', 'Database error')
+      mockDeleteRecordUseCase.execute.mockResolvedValue(Err(error))
+
+      const mockSearchResult = {
+        records: [
+          {
+            id: 'record-1',
+            content: 'tag1 tag2',
+            tagIds: new Set(['tag1', 'tag2']),
+            createdAt: new Date('2023-01-01'),
+            updatedAt: new Date('2023-01-01'),
+          }
+        ],
+        total: 1,
+        hasMore: false,
+      }
+      mockSearchRecordsUseCase.execute.mockResolvedValue(
+        Ok({ searchResult: mockSearchResult })
+      )
+
+      const { result } = renderHook(() => useRecordsIntegrated())
+
+      await waitFor(() => expect(result.current.records).toHaveLength(1))
+
+      await act(async () => {
+        await result.current.deleteRecord('record-1')
+      })
+
+      await waitFor(() => {
+        expect(toast.error).toHaveBeenCalledWith('Failed to delete record: Database error')
       })
     })
   })
