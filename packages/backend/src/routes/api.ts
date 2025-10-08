@@ -68,7 +68,7 @@ router.put('/records/:id', validateUuidParam('id'), validateRecordBody, asyncHan
   const { id } = req.params;
   const { content } = req.body;
 
-  const recordId = new RecordId(id);
+  const recordId = new RecordId(id!);
 
   // Find existing record
   const findResult = await repository.findById(recordId);
@@ -107,7 +107,7 @@ router.delete('/records/:id', validateUuidParam('id'), asyncHandler(async (req: 
   const repository = getRecordRepository();
   const { id } = req.params;
 
-  const recordId = new RecordId(id);
+  const recordId = new RecordId(id!);
 
   const result = await repository.delete(recordId);
 
