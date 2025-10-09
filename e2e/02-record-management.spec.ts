@@ -8,6 +8,8 @@ test.describe('Record Management', () => {
     miscPage = new MiscPage(page);
     await miscPage.goto();
     await miscPage.clearLocalStorage();
+    // Reload page to ensure clean UI state after database clear
+    await miscPage.goto();
   });
 
   test('Creating multiple records', async ({ page: _page }) => {
@@ -44,9 +46,16 @@ test.describe('Record Management', () => {
     // Then the record content should load in the input field
     await expect(miscPage.inputField).toHaveValue('встреча Петров 15:00');
 
-    // When I modify it
-    await miscPage.inputField.clear();
-    await miscPage.createRecord('встреча Петров 16:00 перенос');
+    // Verify we're in edit mode by checking for the "Editing record" indicator
+    const editIndicator = miscPage.page.locator('text=Editing record:');
+    await expect(editIndicator).toBeVisible();
+
+    // When I modify it - use fill which clears automatically
+    await miscPage.inputField.fill('встреча Петров 16:00 перенос');
+    await miscPage.inputField.press('Enter');
+
+    // Wait for the update to complete
+    await miscPage.waitForInputToClear();
 
     // Then the record should be updated
     await miscPage.searchFor('Петров');
@@ -77,6 +86,10 @@ test.describe('Record Management', () => {
   test('Record uniqueness by tag set', async ({ page: _page }) => {
     // Given I have a record
     await miscPage.createRecord('проект дедлайн понедельник');
+
+    // Wait for search results to show the created record
+    await miscPage.searchFor('');
+    await miscPage.waitForSearchResults();
 
     let initialCount = await miscPage.getRecordCount();
     expect(initialCount).toBe(1);
