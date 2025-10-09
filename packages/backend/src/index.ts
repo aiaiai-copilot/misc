@@ -10,8 +10,19 @@ const app = express();
 const PORT = process.env.PORT || 3001;
 
 // Middleware
+// Allow CORS from both development server and E2E test preview server
+const allowedOrigins = ['http://localhost:3000', 'http://localhost:4173', 'http://localhost:5173'];
 app.use(cors({
-  origin: 'http://localhost:3000',
+  origin: (origin, callback) => {
+    // Allow requests with no origin (like mobile apps, curl, postman)
+    if (!origin) return callback(null, true);
+
+    if (allowedOrigins.includes(origin)) {
+      callback(null, true);
+    } else {
+      callback(new Error('Not allowed by CORS'));
+    }
+  },
   credentials: true,
 }));
 app.use(express.json());

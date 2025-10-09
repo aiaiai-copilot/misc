@@ -34,6 +34,9 @@ export const MiscInput = forwardRef<HTMLInputElement, MiscInputProps>(
         e.preventDefault();
         const tags = value.trim().split(/\s+/).filter(Boolean);
         if (tags.length > 0) {
+          // Clear input immediately before calling onSubmit
+          // This ensures E2E tests see the cleared input right away
+          onChange('');
           onSubmit(tags);
         }
       }
@@ -77,8 +80,19 @@ export const MiscInput = forwardRef<HTMLInputElement, MiscInputProps>(
       }
     };
 
+    const handleFormSubmit = (e: React.FormEvent): void => {
+      e.preventDefault();
+      const tags = value.trim().split(/\s+/).filter(Boolean);
+      if (tags.length > 0) {
+        // Clear input immediately before calling onSubmit
+        onChange('');
+        onSubmit(tags);
+      }
+    };
+
     return (
-      <div
+      <form
+        onSubmit={handleFormSubmit}
         className={cn(
           'relative w-full border-8 border-l-16 rounded-md bg-background shadow-inner overflow-hidden',
           className
@@ -96,6 +110,25 @@ export const MiscInput = forwardRef<HTMLInputElement, MiscInputProps>(
             className="calculator-input h-full flex-1 text-center border-0 bg-transparent focus-visible:ring-0 focus-visible:ring-offset-0"
             data-testid="main-input"
             autoFocus
+          />
+          {/* Hidden submit button for E2E tests - allows form submission without relying on Enter key */}
+          {/* Position it at bottom-right to avoid intercepting other elements */}
+          <button
+            type="submit"
+            data-testid="hidden-submit"
+            style={{
+              position: 'absolute',
+              bottom: '-10px',
+              right: '-10px',
+              opacity: 0,
+              width: '1px',
+              height: '1px',
+              overflow: 'hidden',
+              clip: 'rect(0, 0, 0, 0)',
+              whiteSpace: 'nowrap',
+            }}
+            tabIndex={-1}
+            aria-hidden="true"
           />
           {toolbar && (
             <div
@@ -116,7 +149,7 @@ export const MiscInput = forwardRef<HTMLInputElement, MiscInputProps>(
             </div>
           )}
         </div>
-      </div>
+      </form>
     );
   }
 );

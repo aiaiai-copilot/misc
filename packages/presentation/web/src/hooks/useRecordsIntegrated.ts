@@ -189,6 +189,7 @@ export const useRecordsIntegrated = (): UseRecordsIntegratedReturn => {
 
     try {
       const content = tags.join(' ');
+      console.log('[useRecordsIntegrated] Updating record with ID:', id, 'content:', content);
       const result = await updateRecordUseCase.execute({ id, content });
 
       if (result.isOk()) {
@@ -199,7 +200,7 @@ export const useRecordsIntegrated = (): UseRecordsIntegratedReturn => {
           createdAt: new Date(response.record.createdAt),
           updatedAt: new Date(response.record.updatedAt),
         };
-        
+
         setRecords(prev =>
           prev.map(record =>
             record.id === updatedRecord.id ? updatedRecord : record
@@ -208,13 +209,16 @@ export const useRecordsIntegrated = (): UseRecordsIntegratedReturn => {
         return true;
       } else {
         const error = result.unwrapErr();
+        console.error('[useRecordsIntegrated] Update failed:', error);
         toast.error(`Failed to update record: ${error.message}`);
-        throw new Error(error.message);
+        // Don't throw - just return false to let caller handle it
+        return false;
       }
     } catch (error) {
-      console.error('Failed to update record:', error);
+      console.error('[useRecordsIntegrated] Update error:', error);
       toast.error('An unexpected error occurred while updating record');
-      throw error;
+      // Don't throw - just return false
+      return false;
     }
   }, [updateRecordUseCase]);
 

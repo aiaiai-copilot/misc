@@ -1,6 +1,6 @@
 import { Router, Request, Response } from 'express';
 import { PostgresRecordRepository } from '@misc-poc/infrastructure-postgresql';
-import { RecordContent, RecordId, SearchQuery } from '@misc-poc/shared';
+import { RecordContent, RecordId, SearchQuery, TagId, generateTagUuid } from '@misc-poc/shared';
 import { Record } from '@misc-poc/domain';
 import { getDatabasePool } from '../services/database.js';
 import { validateUuidParam, validateRecordBody, validateSearchQuery } from '../middleware/validation.js';
@@ -46,11 +46,14 @@ router.post('/records', validateRecordBody, asyncHandler(async (req: Request, re
   const repository = getRecordRepository();
   const { content } = req.body;
 
-  // Create record content and extract tag IDs from content
+  // Create record content and extract tags from content
   const recordContent = new RecordContent(content);
+  const tokens = recordContent.extractTokens();
 
-  // For now, create record with empty tag set (tag extraction will be handled in future tasks)
-  const record = Record.create(recordContent, new Set());
+  // Generate deterministic TagId for each token (same text = same UUID)
+  const tagIds = new Set(tokens.map(token => new TagId(generateTagUuid(token))));
+
+  const record = Record.create(recordContent, tagIds);
 
   const result = await repository.save(record);
 
@@ -82,12 +85,17 @@ router.put('/records/:id', validateUuidParam('id'), validateRecordBody, asyncHan
     return;
   }
 
-  // Create new record with updated content but same tags
+  // Create new record with updated content and extract tags from new content
   const recordContent = new RecordContent(content);
+  const tokens = recordContent.extractTokens();
+
+  // Generate deterministic TagId for each token (same text = same UUID)
+  const tagIds = new Set(tokens.map(token => new TagId(generateTagUuid(token))));
+
   const updatedRecord = new Record(
     existingRecord.id,
     recordContent,
-    existingRecord.tagIds,
+    tagIds,
     existingRecord.createdAt,
     new Date()
   );

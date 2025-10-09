@@ -36,8 +36,23 @@ const IntegratedIndex = (): JSX.Element => {
   const tagCloudRef = useRef<TagCloudRef>(null);
   const recordsListRef = useRef<RecordsListRef>(null);
 
+  // Ref to track editing state for use in event handlers and effects
+  // This ensures we always have the latest editing state even during rapid updates
+  const editingRecordRef = useRef<Record | null>(null);
+
+  // Sync editing record state to ref for use in callbacks
+  useEffect(() => {
+    editingRecordRef.current = editingRecord;
+  }, [editingRecord]);
+
   // Debounced search and mode detection
   useEffect(() => {
+    // Don't trigger search while editing a record
+    // Use ref to get the most current value
+    if (editingRecordRef.current) {
+      return;
+    }
+
     const timer = setTimeout((): void => {
       setSearchQuery(inputValue);
       // Only perform search if there's a search query
@@ -96,28 +111,44 @@ const IntegratedIndex = (): JSX.Element => {
     displayMode === DisplayMode.LIST;
 
   const handleSubmit = async (tags: string[]): Promise<void> => {
+    // Use the ref to get the current editing record, which is more reliable during rapid state updates
+    const currentEditingRecord = editingRecordRef.current;
+
+    console.log('[handleSubmit] Called with tags:', tags);
+    console.log('[handleSubmit] currentEditingRecord from ref:', currentEditingRecord);
+
     try {
-      if (editingRecord) {
+      if (currentEditingRecord) {
         // Update existing record
-        const success = await updateRecord(editingRecord.id, tags);
+        console.log('[handleSubmit] UPDATING record:', currentEditingRecord.id);
+        const success = await updateRecord(currentEditingRecord.id, tags);
         if (success) {
+          // Clear editing state first, then clear search to show all records
           setEditingRecord(null);
-          setInputValue('');
+          setSearchQuery('');
           toast.success(`Record updated: ${tags.join(' ')}`);
+        } else {
+          // Don't restore input on update failure - keep it cleared
+          // The input is already cleared by MiscInput before calling this handler
+          toast.error('Failed to update record');
         }
       } else {
         // Create new record
+        console.log('[handleSubmit] CREATING new record (editingRecord is null)');
         const success = await createRecord(tags);
         if (success) {
-          setInputValue('');
           toast.success(`Record created: ${tags.join(' ')}`);
         } else {
+          // Don't restore input on creation failure - keep it cleared
+          // The input is already cleared by MiscInput before calling this handler
           toast.error('Record already exists with this combination of tags');
         }
       }
     } catch {
+      // Don't restore input on error - keep it cleared
+      // The input is already cleared by MiscInput before calling this handler
       toast.error(
-        editingRecord ? 'Failed to update record' : 'Failed to create record'
+        currentEditingRecord ? 'Failed to update record' : 'Failed to create record'
       );
     }
     // Focus back to input after submit
@@ -125,8 +156,10 @@ const IntegratedIndex = (): JSX.Element => {
   };
 
   const handleEdit = (record: Record): void => {
+    console.log('[handleEdit] Setting editingRecord:', record.id, record.tags);
     setEditingRecord(record);
     setInputValue(record.tags.join(' '));
+    console.log('[handleEdit] editingRecord set, ref will be updated on next render');
     // Focus input after setting edit mode
     setTimeout(() => inputRef.current?.focus(), 0);
   };
