@@ -102,20 +102,25 @@ const IntegratedIndex = (): JSX.Element => {
         const success = await updateRecord(editingRecord.id, tags);
         if (success) {
           setEditingRecord(null);
-          setInputValue('');
           toast.success(`Record updated: ${tags.join(' ')}`);
+        } else {
+          // Restore input value if update failed
+          setInputValue(tags.join(' '));
         }
       } else {
         // Create new record
         const success = await createRecord(tags);
         if (success) {
-          setInputValue('');
           toast.success(`Record created: ${tags.join(' ')}`);
         } else {
+          // Restore input value if creation failed (duplicate)
+          setInputValue(tags.join(' '));
           toast.error('Record already exists with this combination of tags');
         }
       }
     } catch {
+      // Restore input value on error
+      setInputValue(tags.join(' '));
       toast.error(
         editingRecord ? 'Failed to update record' : 'Failed to create record'
       );

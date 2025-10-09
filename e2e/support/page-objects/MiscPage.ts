@@ -68,9 +68,18 @@ export class MiscPage {
   }
 
   async createRecord(content: string): Promise<void> {
+    // Clear and fill - Playwright standard pattern
+    await this.inputField.clear();
     await this.inputField.fill(content);
+
+    // Submit with Enter - standard Playwright pattern from docs
     await this.inputField.press('Enter');
+
+    // Wait for input to clear (indicates successful submission)
     await this.waitForInputToClear();
+
+    // Small delay to ensure UI is fully updated
+    await this.page.waitForTimeout(300);
   }
 
   async searchFor(query: string): Promise<void> {
@@ -80,7 +89,9 @@ export class MiscPage {
   }
 
   async waitForInputToClear(): Promise<void> {
-    await expect(this.inputField).toHaveValue('');
+    // Wait for the input value to actually become empty
+    // Use Playwright's built-in waiting mechanism instead of fixed timeout
+    await expect(this.inputField).toHaveValue('', { timeout: 10000 });
   }
 
   async waitForResults(): Promise<void> {

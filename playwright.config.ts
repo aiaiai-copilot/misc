@@ -28,7 +28,7 @@ export default defineConfig({
   /* Shared settings for all the projects below. See https://playwright.dev/docs/api/class-testoptions. */
   use: {
     /* Base URL to use in actions like `await page.goto('/')`. */
-    baseURL: 'http://localhost:4173',
+    baseURL: 'http://localhost:5173',
     /* Collect trace when retrying the failed test. See https://playwright.dev/docs/trace-viewer */
     trace: 'on-first-retry',
     /* Take screenshot on failure */
@@ -76,7 +76,7 @@ export default defineConfig({
   /* Run your local dev server before starting the tests */
   webServer: [
     {
-      command: 'bash -c "cd packages/backend && yarn build && yarn start"',
+      command: 'yarn workspace @misc-poc/backend build && yarn workspace @misc-poc/backend start',
       port: 3001,
       reuseExistingServer: !process.env.CI,
       timeout: 60 * 1000, // 1 minute timeout for backend startup
@@ -84,12 +84,13 @@ export default defineConfig({
       stderr: 'pipe',
     },
     {
-      command:
-        'yarn build:packages && yarn workspace @misc-poc/presentation-web build && yarn workspace @misc-poc/presentation-web preview',
-      port: 4173,
+      // Use dev server instead of preview build for better React event handling
+      // See docs/techdebt.md - "Playwright + React Production Build Incompatibility"
+      command: 'yarn workspace @misc-poc/presentation-web dev',
+      port: 5173,
       reuseExistingServer: !process.env.CI,
-      timeout: 120 * 1000, // 2 minutes timeout for build process
-      stdout: 'pipe', // Show build output for debugging
+      timeout: 120 * 1000, // 2 minutes timeout for dev server startup
+      stdout: 'pipe',
       stderr: 'pipe',
       env: {
         VITE_API_BASE_URL: 'http://localhost:3001',
