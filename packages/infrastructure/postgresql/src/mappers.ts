@@ -23,11 +23,16 @@ export interface RecordRow {
 export function toDatabaseRow(record: Record): RecordRow {
   const tagIds = Array.from(record.tagIds);
 
+  // Extract normalized tags from content for search functionality
+  // normalized_tags should contain the actual tag text, not UUIDs
+  const tokens = record.content.extractTokens();
+  const normalizedTags = tokens.map(token => token.toLowerCase());
+
   return {
     id: record.id.toString(),
     content: record.content.toString(),
     tags: tagIds.map(tagId => tagId.toString()),
-    normalized_tags: tagIds.map(tagId => tagId.toString().toLowerCase()),
+    normalized_tags: normalizedTags,
     created_at: record.createdAt,
     updated_at: record.updatedAt,
   };

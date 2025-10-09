@@ -1,13 +1,26 @@
 // @ts-ignore
-import { v4 as uuidv4 } from 'uuid';
+import { v4 as uuidv4, v5 as uuidv5 } from 'uuid';
 import { Result, Ok, Err } from './result.js';
 
 const UUID_REGEX =
   /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
 const UUID_WITHOUT_DASHES_REGEX = /^[0-9a-f]{32}$/i;
 
+// Namespace UUID for tag IDs (generated once for this application)
+// This ensures all tag UUIDs are in the same namespace
+const TAG_NAMESPACE = '6ba7b810-9dad-11d1-80b4-00c04fd430c8';
+
 export function generateUuid(): string {
   return uuidv4();
+}
+
+/**
+ * Generate a deterministic UUID for a tag based on its normalized text.
+ * Same tag text will always produce the same UUID.
+ */
+export function generateTagUuid(tagText: string): string {
+  const normalized = tagText.toLowerCase().trim();
+  return uuidv5(normalized, TAG_NAMESPACE);
 }
 
 export function validateUuid(uuid: string): Result<string, string> {
