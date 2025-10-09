@@ -352,11 +352,24 @@
         "dependencies": [],
         "priority": "high",
         "subtasks": []
+      },
+      {
+        "id": 12,
+        "title": "Fix input field not clearing after record creation in E2E tests",
+        "description": "Investigate and fix the issue where the input field value doesn't clear after successful record creation, causing E2E tests to fail when they expect the input to be empty after pressing Enter.",
+        "details": "The issue occurs in IntegratedIndex.tsx where setInputValue('') is called after createRecord returns successfully (line 112), but the input field value doesn't actually clear. This causes E2E tests to fail because they expect the input to be empty after pressing Enter (as seen in 01-first-use.spec.ts line 25). Investigation areas: 1) Check if createRecord properly returns true/false indicating success/failure 2) Examine React state synchronization - the setInputValue('') call might be racing with the debounced search effect that triggers on inputValue changes (lines 40-49) 3) Look for potential timing issues between the useState setter and the useEffect cleanup 4) Verify that the MiscInput component properly receives and applies the value prop changes 5) Check if there are any async operations that might interfere with the immediate clearing. The fix should ensure input clears immediately after successful record creation while maintaining existing functionality for search, autocomplete, and editing modes.",
+        "testStrategy": "Run E2E test 01-first-use.spec.ts to reproduce the failing assertion on line 25. Create isolated unit tests for the handleSubmit function in IntegratedIndex.tsx to verify setInputValue('') is called correctly. Test the race condition hypothesis by adding logging to both the debounced search effect and the createRecord success path. Verify the fix by ensuring all E2E tests pass, particularly the input clearing assertions in first-use.spec.ts. Test edge cases: rapid typing followed by Enter, creating duplicate records, and editing existing records to ensure input clearing works consistently across all scenarios.",
+        "status": "pending",
+        "dependencies": [
+          9
+        ],
+        "priority": "high",
+        "subtasks": []
       }
     ],
     "metadata": {
       "created": "2025-10-02T17:53:14.910Z",
-      "updated": "2025-10-08T23:56:11.179Z",
+      "updated": "2025-10-09T05:59:51.767Z",
       "description": "Tasks for master context"
     }
   }
