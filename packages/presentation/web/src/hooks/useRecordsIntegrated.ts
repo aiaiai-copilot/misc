@@ -18,6 +18,30 @@ interface UseRecordsIntegratedReturn {
   isLoading: boolean;
 }
 
+/**
+ * Deduplicate records based on normalized tag sets (case-insensitive, order-independent)
+ * Keeps the first occurrence of each unique tag set
+ */
+function deduplicateRecords(records: Record[]): Record[] {
+  const seen = new Set<string>();
+  const deduplicated: Record[] = [];
+
+  for (const record of records) {
+    // Create normalized signature: sorted lowercase tags joined by delimiter
+    const signature = record.tags
+      .map(tag => tag.toLowerCase())
+      .sort()
+      .join('|');
+
+    if (!seen.has(signature)) {
+      seen.add(signature);
+      deduplicated.push(record);
+    }
+  }
+
+  return deduplicated;
+}
+
 export const useRecordsIntegrated = (): UseRecordsIntegratedReturn => {
   const { searchRecordsUseCase, createRecordUseCase, updateRecordUseCase, deleteRecordUseCase } = useApplicationContext();
   const [records, setRecords] = useState<Record[]>([]);
@@ -48,8 +72,8 @@ export const useRecordsIntegrated = (): UseRecordsIntegratedReturn => {
           createdAt: new Date(recordDTO.createdAt),
           updatedAt: new Date(recordDTO.updatedAt),
         }));
-        // Backend already enforces uniqueness - no need for client-side deduplication
-        setRecords(mappedRecords);
+        // Apply client-side deduplication for safety (backend should also enforce uniqueness)
+        setRecords(deduplicateRecords(mappedRecords));
       } else {
         const error = result.unwrapErr();
         toast.error(`Failed to load records: ${error.message}`);
@@ -141,8 +165,8 @@ export const useRecordsIntegrated = (): UseRecordsIntegratedReturn => {
           createdAt: new Date(response.record.createdAt),
           updatedAt: new Date(response.record.updatedAt),
         };
-        // Backend already enforces uniqueness - no need for client-side deduplication
-        setRecords(prev => [...prev, newRecord]);
+        // Apply client-side deduplication for safety (backend should also enforce uniqueness)
+        setRecords(prev => deduplicateRecords([...prev, newRecord]));
         return true;
       } else {
         const error = result.unwrapErr();
@@ -263,8 +287,8 @@ export const useRecordsIntegrated = (): UseRecordsIntegratedReturn => {
           createdAt: new Date(recordDTO.createdAt),
           updatedAt: new Date(recordDTO.updatedAt),
         }));
-        // Backend already enforces uniqueness - no need for client-side deduplication
-        setRecords(mappedRecords);
+        // Apply client-side deduplication for safety (backend should also enforce uniqueness)
+        setRecords(deduplicateRecords(mappedRecords));
       } else {
         const error = result.unwrapErr();
         toast.error(`Search failed: ${error.message}`);
