@@ -36,7 +36,7 @@ router.get('/records', validateSearchQuery, asyncHandler(async (req: Request, re
 
   const searchResult = result.unwrap();
   res.json({
-    records: searchResult.records.map(record => record.toJSON()),
+    records: searchResult.records.map((record: Record) => record.toJSON()),
     total: searchResult.total,
   });
 }));

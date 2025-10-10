@@ -21,17 +21,15 @@ export interface RecordRow {
  * Convert domain Record to database row
  */
 export function toDatabaseRow(record: Record): RecordRow {
-  const tagIds = Array.from(record.tagIds);
+  const tagIds: TagId[] = Array.from(record.tagIds);
 
-  // Extract normalized tags from content for search functionality
-  // normalized_tags should contain the actual tag text, not UUIDs
-  const tokens = record.content.extractTokens();
-  const normalizedTags = tokens.map(token => token.toLowerCase());
+  // Normalize tag UUIDs to lowercase for case-insensitive search
+  const normalizedTags = tagIds.map((tagId: TagId) => tagId.toString().toLowerCase());
 
   return {
     id: record.id.toString(),
     content: record.content.toString(),
-    tags: tagIds.map(tagId => tagId.toString()),
+    tags: tagIds.map((tagId: TagId) => tagId.toString()),
     normalized_tags: normalizedTags,
     created_at: record.createdAt,
     updated_at: record.updatedAt,

@@ -100,7 +100,7 @@ export class PostgresRecordRepository implements RecordRepository {
       const order = sortOrder.toUpperCase();
 
       // Search for records containing ALL tokens in their normalized_tags (AND logic)
-      const normalizedTokens = tokens.map(t => t.toLowerCase());
+      const normalizedTokens = tokens.map((t: string) => t.toLowerCase());
 
       // Count total matching records
       const countQuery = `

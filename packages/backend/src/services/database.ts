@@ -23,6 +23,10 @@ export function getDatabasePool(): Pool {
     pool = createConnectionPool(config);
   }
 
+  if (!pool) {
+    throw new Error('Failed to create database connection pool');
+  }
+
   return pool;
 }
 
