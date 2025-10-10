@@ -23,8 +23,10 @@ export interface RecordRow {
 export function toDatabaseRow(record: Record): RecordRow {
   const tagIds: TagId[] = Array.from(record.tagIds);
 
-  // Normalize tag UUIDs to lowercase for case-insensitive search
-  const normalizedTags = tagIds.map((tagId: TagId) => tagId.toString().toLowerCase());
+  // Extract actual tag text from content for normalized_tags (for search)
+  // Sort the tags to ensure same tag set has same array representation for UNIQUE constraint
+  const tokens = record.content.extractTokens();
+  const normalizedTags = tokens.map((token: string) => token.toLowerCase()).sort();
 
   return {
     id: record.id.toString(),

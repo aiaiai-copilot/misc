@@ -7,7 +7,8 @@ CREATE TABLE records (
   tags TEXT[] NOT NULL,
   normalized_tags TEXT[] NOT NULL,
   created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
-  updated_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
+  updated_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
+  UNIQUE(normalized_tags)
 );
 
 -- GIN index for efficient tag search queries

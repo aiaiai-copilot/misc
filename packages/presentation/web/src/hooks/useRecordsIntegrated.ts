@@ -18,27 +18,6 @@ interface UseRecordsIntegratedReturn {
   isLoading: boolean;
 }
 
-// Helper function to deduplicate records by tag set (mathematical set uniqueness)
-const deduplicateRecordsByTagSet = (records: Record[]): Record[] => {
-  const uniqueRecords: Record[] = [];
-  const seenTagSets = new Set<string>();
-
-  for (const record of records) {
-    // Create a normalized string representation of the tag set for comparison
-    const tagSetKey = [...record.tags]
-      .map(tag => tag.toLowerCase())
-      .sort()
-      .join(',');
-
-    if (!seenTagSets.has(tagSetKey)) {
-      seenTagSets.add(tagSetKey);
-      uniqueRecords.push(record);
-    }
-  }
-
-  return uniqueRecords;
-};
-
 export const useRecordsIntegrated = (): UseRecordsIntegratedReturn => {
   const { searchRecordsUseCase, createRecordUseCase, updateRecordUseCase, deleteRecordUseCase } = useApplicationContext();
   const [records, setRecords] = useState<Record[]>([]);
@@ -69,8 +48,8 @@ export const useRecordsIntegrated = (): UseRecordsIntegratedReturn => {
           createdAt: new Date(recordDTO.createdAt),
           updatedAt: new Date(recordDTO.updatedAt),
         }));
-        const deduplicatedRecords = deduplicateRecordsByTagSet(mappedRecords);
-        setRecords(deduplicatedRecords);
+        // Backend already enforces uniqueness - no need for client-side deduplication
+        setRecords(mappedRecords);
       } else {
         const error = result.unwrapErr();
         toast.error(`Failed to load records: ${error.message}`);
@@ -162,7 +141,8 @@ export const useRecordsIntegrated = (): UseRecordsIntegratedReturn => {
           createdAt: new Date(response.record.createdAt),
           updatedAt: new Date(response.record.updatedAt),
         };
-        setRecords(prev => deduplicateRecordsByTagSet([...prev, newRecord]));
+        // Backend already enforces uniqueness - no need for client-side deduplication
+        setRecords(prev => [...prev, newRecord]);
         return true;
       } else {
         const error = result.unwrapErr();
@@ -283,8 +263,8 @@ export const useRecordsIntegrated = (): UseRecordsIntegratedReturn => {
           createdAt: new Date(recordDTO.createdAt),
           updatedAt: new Date(recordDTO.updatedAt),
         }));
-        const deduplicatedRecords = deduplicateRecordsByTagSet(mappedRecords);
-        setRecords(deduplicatedRecords);
+        // Backend already enforces uniqueness - no need for client-side deduplication
+        setRecords(mappedRecords);
       } else {
         const error = result.unwrapErr();
         toast.error(`Search failed: ${error.message}`);
