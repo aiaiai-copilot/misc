@@ -50,6 +50,11 @@ playwright-report/
 e2e/test-data/
 e2e/downloads/
 
+# Production startup PID files
+*.pid
+.backend.pid
+.web.pid
+
 # Task files
 # tasks.json
 # tasks/ 
