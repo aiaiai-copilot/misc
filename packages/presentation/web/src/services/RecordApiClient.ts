@@ -32,6 +32,13 @@ export class RecordApiClient extends ApiClient {
   }
 
   /**
+   * Get a single record by ID
+   */
+  async getRecordById(id: string): Promise<Result<RecordDTO, ApiError>> {
+    return this.get<RecordDTO>(`/api/records/${id}`);
+  }
+
+  /**
    * Search/list records with optional query and pagination
    */
   async searchRecords(

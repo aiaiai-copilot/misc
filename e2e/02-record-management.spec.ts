@@ -83,24 +83,36 @@ test.describe('Record Management', () => {
     expect(hasNoResults).toBe(true);
   });
 
-  test('Record uniqueness by tag set', async ({ page: _page }) => {
-    // Given I have a record
-    await miscPage.createRecord('проект дедлайн понедельник');
+  test('Record uniqueness by tag set', async ({ page: _page, browserName }) => {
+    // Use browser-specific tags to avoid conflicts between parallel test runs
+    const uniqueId = `${browserName}-${Date.now()}`;
+    const tag1 = `проект-${uniqueId}`;
+    const tag2 = 'дедлайн';
+    const tag3 = 'понедельник';
 
-    // Wait for search results to show the created record
-    await miscPage.searchFor('');
+    // Given I have a record
+    const originalOrder = `${tag1} ${tag2} ${tag3}`;
+    await miscPage.createRecord(originalOrder);
+
+    // Wait for search results to show the created record (search for the unique tag to filter out other tests' records)
+    await miscPage.searchFor(tag1);
     await miscPage.waitForSearchResults();
 
     let initialCount = await miscPage.getRecordCount();
     expect(initialCount).toBe(1);
 
     // When I try to create a duplicate with different order
-    await miscPage.inputField.fill('понедельник проект дедлайн');
+    const differentOrder = `${tag3} ${tag1} ${tag2}`;
+    await miscPage.inputField.fill(differentOrder);
     await miscPage.inputField.press('Enter');
 
     // The input might not clear automatically for duplicate records,
     // so let's wait a moment and check the result
     await miscPage.page.waitForTimeout(500);
+
+    // Search for the unique tag again to filter results
+    await miscPage.searchFor(tag1);
+    await miscPage.waitForSearchResults();
 
     // Then the system should recognize it as a duplicate
     const finalCount = await miscPage.getRecordCount();
@@ -109,6 +121,7 @@ test.describe('Record Management', () => {
     // Check the existing record (behavior may vary - either keeps original order or updates to new order)
     const records = await miscPage.getVisibleRecords();
     // The app might either keep the original order or update to the new input order
-    expect(records[0]).toMatch(/^(проект дедлайн понедельник|понедельник проект дедлайн)$/);
+    const expectedPattern = new RegExp(`^(${tag1} ${tag2} ${tag3}|${tag3} ${tag1} ${tag2})$`);
+    expect(records[0]).toMatch(expectedPattern);
   });
 });

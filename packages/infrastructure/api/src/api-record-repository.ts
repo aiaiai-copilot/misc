@@ -31,6 +31,7 @@ export interface ApiError {
 }
 
 export interface ApiClient {
+  getRecordById(id: string): Promise<Result<RecordDTO, ApiError>>;
   searchRecords(
     query?: string,
     options?: { limit?: number; offset?: number }
@@ -45,19 +46,19 @@ export class ApiRecordRepository implements RecordRepository {
   constructor(private readonly apiClient: ApiClient) {}
 
   async findById(id: RecordId): Promise<Result<Record | null, DomainError>> {
-    // API doesn't have a findById endpoint, so we search for it
-    const result = await this.apiClient.searchRecords(id.toString(), { limit: 1 });
+    const result = await this.apiClient.getRecordById(id.toString());
 
     if (result.isErr()) {
-      return this.handleApiError('Failed to find record by ID', result.unwrapErr());
+      const error = result.unwrapErr();
+      // Return null for 404, propagate other errors
+      if (error.code === 'HTTP_404') {
+        return Ok(null);
+      }
+      return this.handleApiError('Failed to find record by ID', error);
     }
 
-    const data = result.unwrap();
-    if (data.records.length === 0) {
-      return Ok(null);
-    }
-
-    const recordResult = this.fromDTO(data.records[0]!);
+    const dto = result.unwrap();
+    const recordResult = this.fromDTO(dto);
     if (recordResult.isErr()) {
       return Err(recordResult.unwrapErr());
     }

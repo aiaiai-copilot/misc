@@ -41,6 +41,27 @@ router.get('/records', validateSearchQuery, asyncHandler(async (req: Request, re
   });
 }));
 
+// GET /api/records/:id - Get a single record by ID
+router.get('/records/:id', validateUuidParam('id'), asyncHandler(async (req: Request, res: Response) => {
+  const repository = getRecordRepository();
+  const { id } = req.params;
+
+  const recordId = new RecordId(id!);
+
+  const findResult = await repository.findById(recordId);
+  if (findResult.isErr()) {
+    throw findResult.unwrapErr();
+  }
+
+  const record = findResult.unwrap();
+  if (!record) {
+    res.status(404).json({ error: 'Record not found' });
+    return;
+  }
+
+  res.json(record.toJSON());
+}));
+
 // POST /api/records - Create a new record
 router.post('/records', validateRecordBody, asyncHandler(async (req: Request, res: Response) => {
   const repository = getRecordRepository();
@@ -85,17 +106,23 @@ router.put('/records/:id', validateUuidParam('id'), validateRecordBody, asyncHan
 
   const recordId = new RecordId(id!);
 
+  console.log('[PUT /api/records/:id] Looking for record with ID:', recordId.toString());
+
   // Find existing record
   const findResult = await repository.findById(recordId);
   if (findResult.isErr()) {
+    console.log('[PUT /api/records/:id] Error finding record:', findResult.unwrapErr());
     throw findResult.unwrapErr();
   }
 
   const existingRecord = findResult.unwrap();
   if (!existingRecord) {
+    console.log('[PUT /api/records/:id] Record not found in database');
     res.status(404).json({ error: 'Record not found' });
     return;
   }
+
+  console.log('[PUT /api/records/:id] Found existing record:', existingRecord.id.toString());
 
   // Create new record with updated content and extract tags from new content
   const recordContent = new RecordContent(content);
