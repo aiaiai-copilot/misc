@@ -53,6 +53,18 @@ router.post('/records', validateRecordBody, asyncHandler(async (req: Request, re
   // Generate deterministic TagId for each token (same text = same UUID)
   const tagIds = new Set(tokens.map(token => new TagId(generateTagUuid(token))));
 
+  // Check for duplicate records with same tag set
+  const duplicateCheckResult = await repository.findByTagSet(tagIds);
+  if (duplicateCheckResult.isErr()) {
+    throw duplicateCheckResult.unwrapErr();
+  }
+
+  const duplicates = duplicateCheckResult.unwrap();
+  if (duplicates.length > 0) {
+    res.status(409).json({ error: 'Record already exists with this combination of tags' });
+    return;
+  }
+
   const record = Record.create(recordContent, tagIds);
 
   const result = await repository.save(record);
@@ -91,6 +103,18 @@ router.put('/records/:id', validateUuidParam('id'), validateRecordBody, asyncHan
 
   // Generate deterministic TagId for each token (same text = same UUID)
   const tagIds = new Set(tokens.map(token => new TagId(generateTagUuid(token))));
+
+  // Check for duplicate records with same tag set (excluding current record)
+  const duplicateCheckResult = await repository.findByTagSet(tagIds, recordId);
+  if (duplicateCheckResult.isErr()) {
+    throw duplicateCheckResult.unwrapErr();
+  }
+
+  const duplicates = duplicateCheckResult.unwrap();
+  if (duplicates.length > 0) {
+    res.status(409).json({ error: 'Record already exists with this combination of tags' });
+    return;
+  }
 
   const updatedRecord = new Record(
     existingRecord.id,
