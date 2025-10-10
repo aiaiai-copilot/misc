@@ -67,7 +67,8 @@ export const ApplicationContextProvider: React.FC<
         const container = new ApplicationContainer();
 
         // Get API base URL from environment or use default
-        const apiBaseUrl = import.meta.env.VITE_API_BASE_URL || 'http://localhost:3000';
+        // In production, this should be set via VITE_API_BASE_URL environment variable
+        const apiBaseUrl = import.meta.env.VITE_API_BASE_URL || '/api';
 
         // Create API client
         const apiClient = new RecordApiClient({

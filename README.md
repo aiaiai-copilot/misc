@@ -1,170 +1,237 @@
 # misc-poc
 
-## Требования
+## Requirements
 
-- Node.js 22.18.0 (см. `.nvmrc`)
+- Node.js 22.18.0 (see `.nvmrc`)
 - Yarn 3.6.4
 
-## Быстрый старт
+## Quick Start
+
+### Production Mode (Recommended)
 
 ```bash
-# Установить правильную версию Node
+# Install the correct Node version
 nvm use
 
-# Установить зависимости
+# Install dependencies
 yarn install
 
-# Запустить веб-приложение
+# Start the full application (PostgreSQL + Backend + Web)
+yarn start
+```
+
+This will start:
+- 🗄️  PostgreSQL database (docker-compose)
+- 🔌 Backend API server on port 3001
+- 🌐 Web application on port 4173
+
+To stop the application:
+```bash
+yarn stop
+# or press Ctrl+C in the terminal where yarn start is running
+```
+
+### Development Mode (Frontend Only)
+
+```bash
+# Run only the web application (without backend)
 yarn dev
 ```
 
-## Команды для разработки
+### Startup Troubleshooting
 
-### Основные команды
-
+**Docker not running:**
 ```bash
-# Тестирование всех пакетов (автоматически собирает зависимые пакеты)
-yarn test
+# Linux/WSL
+sudo service docker start
 
-# Тестирование без автоматической сборки (быстрее, если пакеты уже собраны)
-yarn test:no-build
+# SystemD-based systems
+sudo systemctl start docker
 
-# Строгое тестирование (останавливается при первой ошибке)
-yarn test:strict
+# Check Docker status
+docker info
+```
 
-# Линтинг всех пакетов
-yarn lint
+**PostgreSQL not ready:**
+```bash
+# Check container status
+docker ps | grep misc-postgres
 
-# Проверка типов всех пакетов
-yarn typecheck
+# Check PostgreSQL logs
+docker logs misc-postgres
 
-# Сборка всех пакетов (включая веб-приложение)
-yarn build
+# Restart PostgreSQL
+docker compose restart postgres
+# or for older versions: docker-compose restart postgres
+```
 
-# Сборка только TypeScript пакетов (без веб-приложения, быстрее)
+**Backend not starting:**
+```bash
+# Check backend build
 yarn build:packages
 
-# Очистка всех пакетов
+# Check backend logs (if running separately)
+yarn workspace @misc-poc/backend start
+```
+
+**Ports are occupied:**
+```bash
+# Check occupied ports
+lsof -i :4173  # Web
+lsof -i :3001  # Backend
+lsof -i :5432  # PostgreSQL
+
+# Free port (kill process)
+kill <PID>
+```
+
+## Development Commands
+
+### Main Commands
+
+```bash
+# Test all packages (automatically builds dependent packages)
+yarn test
+
+# Test without automatic build (faster if packages already built)
+yarn test:no-build
+
+# Strict testing (stops on first error)
+yarn test:strict
+
+# Lint all packages
+yarn lint
+
+# Type-check all packages
+yarn typecheck
+
+# Build all packages (including web application)
+yarn build
+
+# Build only TypeScript packages (without web application, faster)
+yarn build:packages
+
+# Clean all packages
 yarn clean
 ```
 
-### ⚠️ Важно: Зависимости сборки
+### ⚠️ Important: Build Dependencies
 
-Этот монорепо использует TypeScript workspace ссылки. Некоторые пакеты зависят от скомпилированного вывода других пакетов:
+This monorepo uses TypeScript workspace references. Some packages depend on the compiled output of other packages:
 
-- `@misc-poc/presentation-web` импортирует из `@misc-poc/shared`, `@misc-poc/application`, и других
-- Эти пакеты должны быть собраны **до** запуска тестов веб-приложения
+- `@misc-poc/presentation-web` imports from `@misc-poc/shared`, `@misc-poc/application`, and others
+- These packages must be built **before** running web application tests
 
-**Автоматическое решение:**
+**Automatic solution:**
 
-- `yarn test` теперь автоматически собирает необходимые пакеты
-- `yarn dev` автоматически собирает зависимости перед запуском
+- `yarn test` now automatically builds necessary packages
+- `yarn dev` automatically builds dependencies before starting
 
-**Если у вас есть ошибки импорта:**
+**If you have import errors:**
 
 ```bash
-yarn build:packages  # Собрать все TypeScript пакеты
-yarn test            # Теперь тесты должны работать
+yarn build:packages  # Build all TypeScript packages
+yarn test            # Now tests should work
 ```
 
-### Веб-приложение
+### Web Application
 
 ```bash
-# Development сервер (быстрая перезагрузка, HMR)
+# Development server (fast reload, HMR)
 yarn workspace @misc-poc/presentation-web dev
 # → http://localhost:5173/
 
-# Production preview (собранная версия для тестирования)
-yarn dev  # автоматически очищает + собирает + запускает preview
-yarn web:start  # альтернатива без автоочистки
+# Production preview (built version for testing)
+yarn dev  # automatically cleans + builds + starts preview
+yarn web:start  # alternative without auto-clean
 # → http://localhost:4173/
 
-# Только сборка веб-приложения
+# Build web application only
 yarn workspace @misc-poc/presentation-web build
 
-# Только preview сервер (после сборки)
+# Preview server only (after build)
 yarn workspace @misc-poc/presentation-web preview
 
-# Тестирование веб-приложения
+# Test web application
 yarn workspace @misc-poc/presentation-web test
 ```
 
-**⚠️ Node.js v22 совместимость**: Из-за изменений в Node.js v22 и Buffer API, Vite иногда не может правильно очистить папку `dist`. Команда `yarn dev` теперь автоматически очищает веб-пакет перед сборкой, чтобы избежать этой проблемы.
+**⚠️ Node.js v22 compatibility**: Due to changes in Node.js v22 and Buffer API, Vite sometimes cannot properly clean the `dist` folder. The `yarn dev` command now automatically cleans the web package before building to avoid this issue.
 
-### Тестирование
+### Testing
 
-#### Unit тесты
+#### Unit Tests
 
 ```bash
-# Все unit тесты (259 тестов: shared + domain + другие пакеты)
+# All unit tests (259 tests: shared + domain + other packages)
 yarn test
 
-# Тесты отдельных пакетов (используйте workspace команды)
-yarn workspace @misc-poc/shared test  # 229 тестов shared пакета
-yarn workspace @misc-poc/domain test  # 30 тестов domain пакета (TagNormalizer и др.)
+# Individual package tests (use workspace commands)
+yarn workspace @misc-poc/shared test  # 229 tests in shared package
+yarn workspace @misc-poc/domain test  # 30 tests in domain package (TagNormalizer, etc.)
 ```
 
-#### E2E тесты (End-to-End)
+#### E2E Tests (End-to-End)
 
 ```bash
-# Все E2E тесты (17 тестов пользовательских сценариев)
+# All E2E tests (17 user scenario tests)
 yarn test:e2e
 
-# Только Chromium (быстрее)
+# Chromium only (faster)
 yarn test:e2e --project=chromium
 
-# С видимым браузером (для отладки)
+# With visible browser (for debugging)
 yarn test:e2e:headed
 
-# Интерактивный режим
+# Interactive mode
 yarn test:e2e:ui
 
-# Режим отладки (пошаговое выполнение)
+# Debug mode (step-by-step execution)
 yarn test:e2e:debug
 
-# Один конкретный тест
+# Run specific test
 yarn test:e2e --project=chromium --grep "First record creation"
 ```
 
-**E2E тесты покрывают:**
+**E2E tests cover:**
 
-- 🎯 **Первое использование**: Создание записей, обратная связь, пустое состояние
-- 📝 **Управление записями**: CRUD операции, уникальность, редактирование
-- 🔍 **Поиск и обнаружение**: Реальное время поиска, мульти-тег логика, облако тегов
-- ⌨️ **Навигация клавиатурой**: Горячие клавиши, навигация результатами
-- 💾 **Импорт/Экспорт**: Сохранение и миграция данных
+- 🎯 **First-time use**: Record creation, feedback, empty state
+- 📝 **Record management**: CRUD operations, uniqueness, editing
+- 🔍 **Search and discovery**: Real-time search, multi-tag logic, tag cloud
+- ⌨️ **Keyboard navigation**: Hotkeys, result navigation
+- 💾 **Import/Export**: Data persistence and migration
 
-**Устранение неисправностей E2E:**
+**E2E Troubleshooting:**
 
 ```bash
-# Проверить конфликты портов (Linux/WSL)
+# Check port conflicts (Linux/WSL)
 lsof -i :4173
 
-# Проверить конфликты портов (Windows)
+# Check port conflicts (Windows)
 netstat -ano | findstr :4173
 
-# Убить процесс на порту 4173
+# Kill process on port 4173
 kill <PID>  # Linux/WSL
 taskkill /PID <PID> /F  # Windows
 
-# Тестовый запуск сервера вручную
+# Test server startup manually
 yarn test:e2e:server
 
-# Проверить доступность приложения
-curl -I http://localhost:4173/  # Должен вернуть HTTP 200
+# Check application availability
+curl -I http://localhost:4173/  # Should return HTTP 200
 ```
 
-**Если E2E тесты не работают:**
+**If E2E tests don't work:**
 
-1. ✅ Убедитесь, что порт 4173 свободен
-2. ✅ Запустите `yarn test:e2e:server` чтобы проверить сборку
-3. ✅ Откройте http://localhost:4173/ в браузере
-4. ✅ Проверьте, что input поле видимо и фокусировано
+1. ✅ Ensure port 4173 is free
+2. ✅ Run `yarn test:e2e:server` to verify build
+3. ✅ Open http://localhost:4173/ in browser
+4. ✅ Check that input field is visible and focused
 
-### Команды для конкретных пакетов
+### Package-Specific Commands
 
 ```bash
-# Запустить тесты конкретного пакета
+# Run tests for specific package
 yarn workspace @misc-poc/shared test
 yarn workspace @misc-poc/domain test
 yarn workspace @misc-poc/application test
@@ -172,7 +239,7 @@ yarn workspace @misc-poc/infrastructure-localstorage test
 yarn workspace @misc-poc/presentation-cli test  # ❌ No tests found
 yarn workspace @misc-poc/presentation-web test
 
-# Запустить тесты с покрытием
+# Run tests with coverage
 yarn workspace @misc-poc/shared test --coverage
 yarn workspace @misc-poc/domain test --coverage
 yarn workspace @misc-poc/application test --coverage
@@ -180,16 +247,16 @@ yarn workspace @misc-poc/infrastructure-localstorage test --coverage
 yarn workspace @misc-poc/presentation-cli test --coverage
 yarn workspace @misc-poc/presentation-web test --coverage
 
-# Линтинг конкретного пакета (eslint установлен на уровне root)
-yarn lint  # Линтинг всех пакетов - рекомендуется
-# Или для отдельных пакетов:
+# Lint specific package (eslint installed at root level)
+yarn lint  # Lint all packages - recommended
+# Or for individual packages:
 yarn exec eslint packages/shared/src --ext .ts
 yarn exec eslint packages/domain/src --ext .ts
 yarn exec eslint packages/application/src --ext .ts
 yarn exec eslint packages/infrastructure/localStorage/src --ext .ts
 yarn exec eslint packages/presentation/web/src --ext .ts,.tsx
 
-# Проверка типов конкретного пакета
+# Type-check specific package
 yarn workspace @misc-poc/shared typecheck
 yarn workspace @misc-poc/domain typecheck
 yarn workspace @misc-poc/application typecheck
@@ -197,7 +264,7 @@ yarn workspace @misc-poc/infrastructure-localstorage typecheck
 yarn workspace @misc-poc/presentation-cli typecheck
 yarn workspace @misc-poc/presentation-web typecheck
 
-# Сборка конкретного пакета
+# Build specific package
 yarn workspace @misc-poc/shared build
 yarn workspace @misc-poc/domain build
 yarn workspace @misc-poc/application build
@@ -206,25 +273,25 @@ yarn workspace @misc-poc/presentation-cli build
 yarn workspace @misc-poc/presentation-web build
 ```
 
-## Контроль качества при коммитах
+## Commit Quality Control
 
-Проект настроен с автоматическими проверками качества при каждом коммите:
+The project is configured with automatic quality checks on every commit:
 
-### Что проверяется автоматически
+### What is checked automatically
 
-- **ESLint**: Проверка и автоисправление кода
-- **Prettier**: Автоформатирование кода
-- **TypeScript**: Проверка типов
-- **Jest**: Запуск тестов (без покрытия для быстроты)
-- **TaskMaster**: Соответствие workflow задач
+- **ESLint**: Code checking and auto-fixing
+- **Prettier**: Code auto-formatting
+- **TypeScript**: Type checking
+- **Jest**: Running tests (without coverage for speed)
+- **TaskMaster**: Task workflow compliance
 
-### Последовательность проверок
+### Check Sequence
 
-1. ESLint исправляет проблемы кода
-2. Prettier форматирует код
-3. TypeScript проверяет типы
-4. Jest запускает тесты
-5. TaskMaster проверяет статус задачи
-6. Коммит выполняется только если все проверки прошли
+1. ESLint fixes code issues
+2. Prettier formats code
+3. TypeScript checks types
+4. Jest runs tests
+5. TaskMaster checks task status
+6. Commit is executed only if all checks pass
 
-Это обеспечивает высокое качество кода и соблюдение стандартов проекта.
+This ensures high code quality and adherence to project standards.

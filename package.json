@@ -19,6 +19,8 @@
   },
   "packageManager": "yarn@3.6.4",
   "scripts": {
+    "start": "./scripts/start-production.sh",
+    "stop": "./scripts/stop-production.sh",
     "prebuild": "yarn install",
     "build": "yarn workspace @misc-poc/shared build && yarn workspace @misc-poc/domain build && yarn workspace @misc-poc/application build && yarn workspace @misc-poc/infrastructure-api build && yarn workspace @misc-poc/infrastructure-localstorage build && yarn workspace @misc-poc/infrastructure-postgresql build && yarn workspace @misc-poc/backend build && yarn workspace @misc-poc/presentation-cli build && yarn workspace @misc-poc/presentation-web build",
     "build:packages": "yarn workspace @misc-poc/shared build && yarn workspace @misc-poc/domain build && yarn workspace @misc-poc/infrastructure-api build && yarn workspace @misc-poc/infrastructure-localstorage build && yarn workspace @misc-poc/infrastructure-postgresql build && yarn workspace @misc-poc/application build && yarn workspace @misc-poc/backend build",
