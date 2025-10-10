@@ -357,7 +357,7 @@
         "id": 12,
         "title": "Fix input field not clearing after record creation in E2E tests",
         "description": "Investigation completed and core functionality fixed. Input clearing now works correctly in manual testing, but fundamental E2E testing limitation discovered with Playwright + React production builds. Core application functionality is working properly.",
-        "status": "deferred",
+        "status": "done",
         "dependencies": [
           9
         ],
@@ -414,7 +414,7 @@
             "id": 6,
             "title": "Choose E2E testing strategy and implement solution",
             "description": "Decision needed: Select and implement one of the documented E2E solutions",
-            "status": "deferred",
+            "status": "done",
             "dependencies": [],
             "details": "Four options available in docs/techdebt.md: (1) Modify playwright.config.ts to test against dev server instead of production build [RECOMMENDED - 1-2 hours], (2) Create test-only API endpoints to bypass UI interactions [4-6 hours], (3) Evaluate migration to Cypress/Selenium [2-3 days], (4) Add window.__testHooks for test-specific functionality [2-4 hours]. Decision required to proceed with E2E test fixes.\n<info added on 2025-10-09T12:57:07.898Z>\nOption 1 (dev server configuration) successfully implemented and validated. Modified playwright.config.ts to target development server (port 5173) instead of production preview (port 4173), resolving the Playwright + React production build keyboard event compatibility issue. E2E page object methods simplified to follow standard Playwright patterns from official documentation. Test suite now shows 56% pass rate (15/27 tests passing) compared to previous 0% reliability. Remaining 12 test failures identified as separate database cleanup issue with empty tag constraint violations, unrelated to the original Playwright keyboard event problem. Core Playwright compatibility issue confirmed resolved. Implementation time approximately 1-2 hours as estimated. Database cleanup issue flagged for separate investigation in future development session.\n</info added on 2025-10-09T12:57:07.898Z>\n<info added on 2025-10-09T22:08:49.328Z>\nI'll analyze the codebase to understand the current E2E testing setup and the record ID issue mentioned in GitHub issue #17.Based on my analysis of the codebase, the issue appears to be in the E2E test \"Editing an existing record\" in `e2e/02-record-management.spec.ts:35-66`. The test creates a record, searches for it, clicks it to load it into the input field for editing, then submits the modified content. This would trigger the `updateRecord` function in `packages/presentation/web/src/hooks/useRecordsIntegrated.ts:187` which logs the record ID being sent to the backend, but the PostgreSQL backend returns \"Record not found\" even though the record ID exists in the frontend state.\n\nDeferred pending investigation of record ID issue documented in GitHub issue #17. The E2E test \"Editing an existing record\" fails because PostgreSQL backend returns \"Record not found\" when trying to update a record, even though the record ID exists in frontend state (logged in useRecordsIntegrated.ts:192). Need to debug why the record ID sent from frontend to backend doesn't exist in database. Issue manifests specifically during record update operations where frontend loads existing record for editing but backend can't locate the same record by ID during the PUT /api/records/:id request. Requires investigation of ID generation/persistence between record creation and update operations.\n</info added on 2025-10-09T22:08:49.328Z>",
             "testStrategy": ""
@@ -424,7 +424,7 @@
     ],
     "metadata": {
       "created": "2025-10-02T17:53:14.910Z",
-      "updated": "2025-10-10T11:42:28.080Z",
+      "updated": "2025-10-10T22:30:12.005Z",
       "description": "Tasks for master context"
     }
   }
