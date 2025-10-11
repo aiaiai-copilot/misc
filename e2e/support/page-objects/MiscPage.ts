@@ -104,12 +104,16 @@ export class MiscPage {
   }
 
   async getRecordCount(): Promise<number> {
-    const isListVisible = await this.recordsList.isVisible();
-    if (isListVisible) {
+    // Wait for the records list to be in the DOM (might not be visible if no search)
+    // After creating a record, we need to trigger a search to see it
+    try {
+      await this.recordsList.waitFor({ state: 'attached', timeout: 5000 });
       const records = this.recordsList.locator('[data-testid="record-item"]');
       return await records.count();
+    } catch {
+      // If records list doesn't exist or times out, return 0
+      return 0;
     }
-    return 0;
   }
 
   async getVisibleRecords(): Promise<string[]> {

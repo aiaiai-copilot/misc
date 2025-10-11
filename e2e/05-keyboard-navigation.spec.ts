@@ -22,9 +22,14 @@ test.describe('Keyboard Navigation', () => {
     // When I type "test record" and press Enter
     await miscPage.createRecord('test record');
 
-    // Then a new record should be created
+    // Then a new record should be created - search for it to verify
+    await miscPage.searchFor('test');
+    await miscPage.waitForSearchResults();
     const records = await miscPage.getVisibleRecords();
     expect(records.some(record => record.includes('test record'))).toBe(true);
+
+    // Clear search to continue with other tests
+    await miscPage.clearInput();
 
     // When I press Escape
     await miscPage.inputField.fill('some text');

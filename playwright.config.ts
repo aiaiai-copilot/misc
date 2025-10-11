@@ -64,15 +64,19 @@ export default defineConfig({
       use: { ...devices['iPhone 12'] },
     },
 
-    /* Test against branded browsers. */
-    {
-      name: 'Microsoft Edge',
-      use: { ...devices['Desktop Edge'], channel: 'msedge' },
-    },
-    {
-      name: 'Google Chrome',
-      use: { ...devices['Desktop Chrome'], channel: 'chrome' },
-    },
+    /* Test against branded browsers (requires system installation). */
+    /* Disabled: Google Chrome and Microsoft Edge are not installed in WSL2 environment.
+     * These browsers provide minimal additional coverage beyond Chromium.
+     * To enable: Install the browsers and uncomment the projects below.
+     */
+    // {
+    //   name: 'Microsoft Edge',
+    //   use: { ...devices['Desktop Edge'], channel: 'msedge' },
+    // },
+    // {
+    //   name: 'Google Chrome',
+    //   use: { ...devices['Desktop Chrome'], channel: 'chrome' },
+    // },
   ],
 
   /* Run your local dev server before starting the tests */

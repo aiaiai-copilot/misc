@@ -18,8 +18,15 @@ test.describe('First Use Experience', () => {
     await miscPage.createRecord('ToDo встреча Петров 15:00');
 
     // Then the record should be saved
+    // Search for the record to make it visible in the UI
+    await miscPage.searchFor('ToDo');
+    await miscPage.waitForSearchResults();
+
     const recordCount = await miscPage.getRecordCount();
     expect(recordCount).toBe(1);
+
+    // Clear the search to return to empty state
+    await miscPage.clearInput();
 
     // And the input field should be cleared
     await expect(miscPage.inputField).toHaveValue('');
