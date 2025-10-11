@@ -12,13 +12,15 @@ export default defineConfig({
   globalSetup: './e2e/support/global-setup.ts',
   globalTeardown: './e2e/support/global-teardown.ts',
   /* Run tests in files in parallel */
-  fullyParallel: true,
+  // Disabled due to shared PostgreSQL database with UNIQUE constraint on normalized_tags
+  // Multiple workers creating records with same tag sets causes conflicts
+  fullyParallel: false,
   /* Fail the build on CI if you accidentally left test.only in the source code. */
   forbidOnly: !!process.env.CI,
   /* Retry on CI only */
   retries: process.env.CI ? 2 : 0,
-  /* Opt out of parallel tests on CI. */
-  workers: process.env.CI ? 1 : undefined,
+  /* Use single worker to avoid database conflicts with UNIQUE constraint */
+  workers: 1,
   /* Reporter to use. See https://playwright.dev/docs/test-reporters */
   reporter: [
     ['html'],
